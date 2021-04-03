@@ -4,7 +4,7 @@
 **Build** /n
 `$ clang -Wall -Wextra -Werror -Wpedantic -o hello hello.c`
 
-**How to Run** /n
+**How to Run** \n
 `$ ./hello`
 
 **Files**
