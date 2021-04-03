@@ -1,10 +1,10 @@
 **Description**
-When you run the program it will print out "Hello World!".
+/n When you run the program it will print out "Hello World!".
 
-**Build**
+**Build** /n
 `$ clang -Wall -Wextra -Werror -Wpedantic -o hello hello.c`
 
-**How to Run**
+**How to Run** /n
 `$ ./hello`
 
 **Files**
