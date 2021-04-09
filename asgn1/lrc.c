@@ -65,8 +65,8 @@ int main(void) {
 
         for (int32_t p = 0; p < players; p += 1) {
 
-            if (active == 1){
-                break;  // Exit loop if only 1 active player
+            if (active == 1) {
+                break; // Exit loop if only 1 active player
             }
 
             if (bank[p] == 0) {
