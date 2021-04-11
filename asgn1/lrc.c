@@ -74,7 +74,7 @@ int main(void) {
 
             uint32_t dice = bank[p]; // Number of rolls player gets is based on their funds
             if (dice > 3) {
-		dice = 3;
+                dice = 3;
             }
 
             printf("%s rolls...", philosophers[p]);
@@ -87,12 +87,12 @@ int main(void) {
                     bank[p] -= 1;
 
                     if (bank[p] == 0) {
-                        active -= 1;  // Player is out of the game.
+                        active -= 1; // Player is out of the game.
                     }
 
                     left_player = left(p, players);
                     if (bank[left_player] == 0) {
-                        active += 1;  // Player is back in the game.
+                        active += 1; // Player is back in the game.
                     }
                     bank[left_player] += 1;
                     printf(" gives $1 to %s", philosophers[left_player]);
