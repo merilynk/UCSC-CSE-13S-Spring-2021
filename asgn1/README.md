@@ -6,7 +6,7 @@ letting the user know what each player rolls and who wins the game.
 
 ## Build
 	$ make
-	or
+or
 	$ make all
 
 ## Running
