@@ -10,25 +10,23 @@
 
 #define FUNDS     3 // Amount of money each player starts with.
 #define MAX_ROLLS 3 // Maximum number of dice a player can do in their turn.
-#define PHILOS    14 // Largest number of players that can be in the game is the lentgh of philos[]
+#define PHILOS    14 // Largest number of players that can be in the game is the length of philos[]
 
 // The following two functions is code provided in the assignment 1 PDF.
 
+// Returns the position of the player to the left.
+// pos:     The position of the current player.
+// players: The number of players in the game.
+
 static inline uint8_t left(uint8_t pos, uint8_t players) {
-
-    // Returns the position of the player to the left.
-    // pos:     The position of the current player.
-    // players: The number of players in the game.
-
     return ((pos + players - 1) % players);
 }
 
+// Returns the position of the player to the right.
+// pos:    The postition of the current player.
+// playes: The number f players in the game.
+
 static inline uint8_t right(uint8_t pos, uint8_t players) {
-
-    // Returns the position of the player to the right.
-    // pos:    The postition of the current player.
-    // playes: The number f players in the game.
-
     return ((pos + 1) % players);
 }
 
@@ -76,7 +74,7 @@ int main(void) {
 
             uint32_t dice = bank[p]; // Number of rolls player gets is based on their funds
             if (dice > 3) {
-                dice = MAX_ROLLS; // Max number of rolls player can have is three
+		dice = 3;
             }
 
             printf("%s rolls...", philosophers[p]);
@@ -84,18 +82,17 @@ int main(void) {
             for (uint32_t r = dice; r > 0; r -= 1) {
 
                 roll = random() % 6; // Generate a random number
-                //printf("%d", roll);
 
                 if (die[roll] == LEFT) {
                     bank[p] -= 1;
 
                     if (bank[p] == 0) {
-                        active -= 1;
+                        active -= 1;  // Player is out of the game.
                     }
 
                     left_player = left(p, players);
                     if (bank[left_player] == 0) {
-                        active += 1;
+                        active += 1;  // Player is back in the game.
                     }
                     bank[left_player] += 1;
                     printf(" gives $1 to %s", philosophers[left_player]);
