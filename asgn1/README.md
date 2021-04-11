@@ -5,11 +5,9 @@ and a number of players between 1 and 14 inclusive. The program prints out the g
 letting the user know what each player rolls and who wins the game.
 
 ## Build
+Running either of the below commands should build the program.
 	$ make
-or
-'''
-$ make all
-'''
+	$ make all
 
 ## Running
 	$ ./lrc
