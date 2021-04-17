@@ -12,33 +12,46 @@ static void printTableHeader(char name[]) {
 }
 
 int main(int argc, char **argv) {
-    int opt = 0, arcsin = 0, arccos = 0, arctan = 0, ln = 0;
+    int opt = 0, arcsin = 0, arccos = 0, arctan = 0, ln = 0, arg_exists = 0;
 
-    while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
-        switch (opt) {
-        case 'a':
-            arcsin = 1;
-            arccos = 1;
-            arctan = 1;
-            ln = 1;
-            break;
-        case 's':
-	    arcsin = 1;
-	    break;
-        case 'c':
-	    arccos = 1;
-	    break;
-        case 't':
-	    arctan = 1;
-	    break;
-        case 'l':
-	    ln = 1;
-	    break;
-        default:
-            printf("Program usage: ./mathlib-test -[asctl]\n-a Runs all tests (arcsin, arccos, "
-                   "arctan, log)\n-s Runs arcsin tests\n-c Runs arccos tests\n-t Runs arctan "
-                   "tests\n-l Runs log tests\n");
-        }
+	while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
+	    switch (opt) {
+		case 'a':
+		    arcsin = 1;
+		    arccos = 1;
+		    arctan = 1;
+		    ln = 1;
+		    arg_exists = 1;
+		    break;
+		case 's':
+		    arcsin = 1;
+		    arg_exists = 1;
+		    break;
+		case 'c':
+		    arccos = 1;
+		    arg_exists = 1;
+		    break;
+		case 't':
+		    arctan = 1;
+		    arg_exists = 1;
+		    break;
+		case 'l':
+		    ln = 1;
+		    arg_exists = 1;
+		    break;
+		default:
+		    arg_exists = 1;
+		    printf("Program usage: ./mathlib-test -[asctl]\n  -a   Runs all tests (arcsin, arccos, "
+			    "arctan, log)\n  -s   Runs arcsin tests\n  -c   Runs arccos tests\n  -t   Runs arctan "
+			    "tests\n  -l   Runs log tests\n");
+		    break;
+	    }
+	}
+
+    if (arg_exists == 0) {
+	printf("Program usage: ./mathlib-test -[asctl]\n  -a   Runs all tests (arcsin, arccos, "
+		"arctan, log)\n  -s   Runs arcsin tests\n  -c   Runs arccos tests\n  -t   Runs arctan "
+		"tests\n  -l   Runs log tests\n");
     }
 
     if (arcsin == 1) {
