@@ -6,6 +6,8 @@
 
 #define OPTIONS "asctl"
 
+// Setup of code is based on Sahiti's code from her section.
+
 static void printTableHeader(char name[]) {
     printf("  x            %s           Library        Difference \n", name);
     printf("  -            ------           -------        ---------- \n");
@@ -21,7 +23,7 @@ int main(int argc, char **argv) {
             arccos = 1;
             arctan = 1;
             ln = 1;
-            arg_exists = 1;
+            arg_exists = 1; // User entered an argument.
             break;
         case 's':
             arcsin = 1;
@@ -49,7 +51,9 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (arg_exists == 0) {
+    // Print outputs based on cases.
+
+    if (arg_exists == 0) { // User did not enter any arguments.
         printf(
             "Program usage: ./mathlib-test -[asctl]\n  -a   Runs all tests (arcsin, arccos, "
             "arctan, log)\n  -s   Runs arcsin tests\n  -c   Runs arccos tests\n  -t   Runs arctan "

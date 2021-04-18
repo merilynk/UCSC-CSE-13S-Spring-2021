@@ -1,4 +1,5 @@
-#include <assert.h>
+#include "mathlib.h"
+
 #include <math.h>
 #include <stdio.h>
 
@@ -14,7 +15,6 @@ static double AbsVal(double x) {
 // The code for this function is from sqrt.c posted by Prof Long on Piazza.
 static double Sqrt(double x) {
     double y = 1.0;
-    assert(x >= 0);
     for (double guess = 0.0; AbsVal(y - guess) > EPSILON; y = (y + x / y) / 2.0) {
         guess = y;
     }
@@ -34,7 +34,7 @@ static double Exp(double x) {
 double arcSin(double x) {
     double yk = 0, yk_1 = x;
     while (AbsVal(yk_1 - yk) > EPSILON) {
-        yk = yk_1;
+        yk = yk_1; // set last value to new guess
         yk_1 = yk - (sin(yk) - x) / cos(yk);
     }
     return yk_1;
