@@ -15,7 +15,9 @@ $ make all
 ## Running
 Based on the arugments you enter, a, s, c, t, and/or l, the program will print the corresponding
 outputs.
-	$ ./mathlib-test [asctl]
+```
+$ ./mathlib-test [asctl]
+```
 
 ## Cleaning
 	$ make clean
