@@ -32,7 +32,7 @@ static double Exp(double x) {
 }
 
 double arcSin(double x) {
-    double yk = 0, yk_1 = x;
+    double yk = 0, yk_1 = x; // yk = initial guess; yk_1 = next guess
     while (AbsVal(yk_1 - yk) > EPSILON) {
         yk = yk_1; // set last value to new guess
         yk_1 = yk - (sin(yk) - x) / cos(yk);
@@ -41,18 +41,18 @@ double arcSin(double x) {
 }
 
 double arcCos(double x) {
-    return M_PI_2 - arcSin(x);
+    return M_PI_2 - arcSin(x); // arccos(x) = PI/2 - arccos(x)
 }
 
 double arcTan(double x) {
-    return arcSin(x / Sqrt((x * x) + 1));
+    return arcSin(x / Sqrt((x * x) + 1)); // arctan(x) = arcsin(sqrt(x^2 + 1 ))
 }
 
 double Log(double x) {
     double yk = 0, yk_1 = 1;
     while (AbsVal(yk_1 - yk) > EPSILON) {
         yk = yk_1;
-        yk_1 = yk + (x - Exp(yk)) / Exp(yk);
+        yk_1 = yk + (x - Exp(yk)) / Exp(yk); // Exp(x) = e^x
     }
     return yk_1;
 }

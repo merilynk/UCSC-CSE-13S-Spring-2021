@@ -8,13 +8,20 @@
 
 // Setup of code is based on Sahiti's code from her section.
 
+//
+// Prints the header of the table.
+//
+//name[]: string, name of function
+//
 static void printTableHeader(char name[]) {
     printf("  x            %s           Library        Difference \n", name);
     printf("  -            ------           -------        ---------- \n");
 }
 
 int main(int argc, char **argv) {
-    int opt = 0, arcsin = 0, arccos = 0, arctan = 0, ln = 0, arg_exists = 0;
+    int opt = 0;
+    int arcsin = 0, arccos = 0, arctan = 0, ln = 0; // 0 means don't print output, 1 means print
+    int arg_exists = 0; // remains 0 if no arguments entered, 1 if any # args entered
 
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
@@ -42,6 +49,7 @@ int main(int argc, char **argv) {
             arg_exists = 1;
             break;
         default:
+            // if incorrect arguments were entered
             arg_exists = 1;
             printf("Program usage: ./mathlib-test -[asctl]\n  -a   Runs all tests (arcsin, arccos, "
                    "arctan, log)\n  -s   Runs arcsin tests\n  -c   Runs arccos tests\n  -t   Runs "
