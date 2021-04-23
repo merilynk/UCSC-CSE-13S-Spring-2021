@@ -1,11 +1,10 @@
 CC = clang
 CFLAGS = -Wall -Werror -Wextra -Wpedantic
-LFLAGS = -lm
 
 all: sorting
 
 sorting: sorting.o bubble.o shell.o quick.o stack.o queue.o set.o helper.o
-	$(CC) -o sorting sorting.o bubble.o shell.o quick.o stack.o queue.o set.o helper.o $(LFLAGS)
+	$(CC) -o sorting sorting.o bubble.o shell.o quick.o stack.o queue.o set.o helper.o
 
 sorting.o: sorting.c
 	$(CC) $(CFLAGS) -c sorting.c
