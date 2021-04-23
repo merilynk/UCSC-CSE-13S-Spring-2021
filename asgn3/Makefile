@@ -4,8 +4,8 @@ LFLAGS = -lm
 
 all: sorting
 
-sorting: sorting.o bubble.o gaps.o shell.o quick.o stack.o queue.o set.o
-	$(CC) -o sorting sorting.o bubble.o gaps.o shell.o quick.o stack.o queue.o set.o $(LFLAGS)
+sorting: sorting.o bubble.o shell.o quick.o stack.o queue.o set.o helper.o
+	$(CC) -o sorting sorting.o bubble.o shell.o quick.o stack.o queue.o set.o helper.o $(LFLAGS)
 
 sorting.o: sorting.c
 	$(CC) $(CFLAGS) -c sorting.c
