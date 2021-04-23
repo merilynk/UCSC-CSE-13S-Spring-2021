@@ -13,9 +13,6 @@ sorting.o: sorting.c
 bubble.o: bubble.c
 	$(CC) $(CFLAGS) -c bubble.c
 
-gaps.o: gaps.c
-	$(CC) $(CFLAGS) -c gaps.c
-
 shell.o: shell.c
 	$(CC) $(CFLAGS) -c shell.c
 
@@ -30,6 +27,9 @@ queue.o: queue.c
 
 set.o: set.c
 	$(CC) $(CFLAGS) -c set.c
+
+helper.o: helper.c
+	$(CC) $(CFLAGS) -c helper.c
 
 clean:
 	rm -f *.o sorting
