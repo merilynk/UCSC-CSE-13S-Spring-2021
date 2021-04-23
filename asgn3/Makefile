@@ -5,7 +5,7 @@ LFLAGS = -lm
 all: sorting
 
 sorting: sorting.o bubble.o gaps.o shell.o quick.o stack.o queue.o set.o
-	$(CC) $(CFLAGS) -o sorting sorting.o bubble.o gaps.o shell.o quick.o stack.o queue.o set.o $(LFLAGS)
+	$(CC) -o sorting sorting.o bubble.o gaps.o shell.o quick.o stack.o queue.o set.o $(LFLAGS)
 
 sorting.o: sorting.c
 	$(CC) $(CFLAGS) -c sorting.c
@@ -34,5 +34,5 @@ set.o: set.c
 clean:
 	rm -f *.o sorting
 
-clang-format:
+format:
 	clang-format -i -style=file *.h *.c
