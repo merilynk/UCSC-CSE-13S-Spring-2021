@@ -2,10 +2,11 @@
 // Merilyn Kuo
 // CSE 13S Spring
 
+#include "quick.h"
+
 #include "helper.h"
 #include "queue.h"
 #include "stack.h"
-#include "quick.h"
 
 #include <stdbool.h>
 #include <stdint.h>
