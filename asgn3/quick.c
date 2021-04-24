@@ -5,6 +5,7 @@
 #include "helper.h"
 #include "queue.h"
 #include "stack.h"
+#include "quick.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -30,7 +31,7 @@ static uint32_t partition(uint32_t arr[], int64_t lo, int64_t hi) {
 void quick_sort_stack(uint32_t arr[], uint32_t size) {
     int64_t lo = 0;
     int64_t hi = size - 1;
-    Stack stack = stack_create(size);
+    Stack *stack = stack_create(size);
     stack_push(stack, lo);
     stack_push(stack, hi);
     while (stack_size(stack) != 0) {
@@ -51,7 +52,7 @@ void quick_sort_stack(uint32_t arr[], uint32_t size) {
 void quick_sort_queue(uint32_t arr[], uint32_t size) {
     int64_t lo = 0;
     int64_t hi = size - 1;
-    Queue queue = *queue_create(size);
+    Queue *queue = queue_create(size);
     enqueue(queue, lo);
     enqueue(queue, hi);
     while (queue_size(queue) != 0) {
@@ -64,7 +65,7 @@ void quick_sort_queue(uint32_t arr[], uint32_t size) {
         }
         if (hi > p + 1) {
             enqueue(queue, p + 1);
-            enqueue(queue, hi)
+            enqueue(queue, hi);
         }
     }
 }
