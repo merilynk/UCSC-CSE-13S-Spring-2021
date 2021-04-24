@@ -2,13 +2,13 @@
 // Merilyn Kuo
 // CSE 13S Spring 2021
 
-#include <stdint.h>
 #include "bubble.h"
-#include "shell.h"
-#include "quick.h"
 #include "helper.h"
+#include "quick.h"
 #include "set.h"
+#include "shell.h"
+
+#include <stdint.h>
 
 int main() {
-
 }
