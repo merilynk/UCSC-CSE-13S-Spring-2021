@@ -3,11 +3,12 @@
 // CSE 13S Spring 2021
 
 #include "bubble.h"
-
 #include "helper.h"
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <inttypes.h>
 
 void bubble_sort(uint32_t arr[], uint32_t size) {
     bool swapped = true;
@@ -21,4 +22,5 @@ void bubble_sort(uint32_t arr[], uint32_t size) {
         }
         size -= 1;
     } while (swapped);
+    return;
 }

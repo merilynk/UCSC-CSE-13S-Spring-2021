@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 
 static uint32_t partition(uint32_t arr[], int64_t lo, int64_t hi) {
     uint32_t pivot = arr[lo + ((hi - lo) / 2)];
@@ -31,7 +32,7 @@ static uint32_t partition(uint32_t arr[], int64_t lo, int64_t hi) {
 
 void quick_sort_stack(uint32_t arr[], uint32_t size) {
     int64_t lo = 0;
-    int64_t hi = size - 1;
+    int64_t hi = (int64_t) size - 1;
     Stack *stack = stack_create(size);
     stack_push(stack, lo);
     stack_push(stack, hi);
@@ -48,6 +49,7 @@ void quick_sort_stack(uint32_t arr[], uint32_t size) {
             stack_push(stack, hi);
         }
     }
+    return;
 }
 
 void quick_sort_queue(uint32_t arr[], uint32_t size) {

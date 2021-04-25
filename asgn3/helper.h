@@ -6,4 +6,8 @@
 // Swaps two integers.
 void swap(uint32_t *x, uint32_t *y);
 
+int compares;
+
+int moves;
+
 #endif
