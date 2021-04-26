@@ -15,4 +15,6 @@ int moves;
 
 uint32_t max_size;
 
+int n; // for time complexity
+
 #endif

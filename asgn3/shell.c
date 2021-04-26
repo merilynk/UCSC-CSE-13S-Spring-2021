@@ -10,6 +10,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
+int moves = 0;
+int compares = 0;
+
 void shell_sort(uint32_t arr[], uint32_t size) {
     moves = 0;
     compares = 0;

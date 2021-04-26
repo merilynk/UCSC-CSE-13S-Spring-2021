@@ -104,31 +104,38 @@ int main(int argc, char **argv) {
                "   -p elements     Specify number of elements to print.\n");
     }
 
+    if (elements > size) {
+        elements = size;
+    }
+    uint32_t a[size];
+    srandom(seed);
+    for (uint32_t i = 0; i < size; i += 1) {
+        a[i] = random();
+    }
+    printf("%d %d %d", seed, size, elements);
     for (int i = 0; i < 4; i += 1) {
-        //printf("%d\n", i);
+        uint32_t a_sort[size];
         if (set_member(sorts, i)) {
-            uint32_t *a = (uint32_t *) calloc(size, sizeof(uint32_t));
-            srandom(seed);
             for (uint32_t i = 0; i < size; i += 1) {
-                a[i] = random();
-                //printf("%d\n", a[i]);
+                a_sort[i] = a[i];
+                //printf(" %d", a_sort[i]);
             }
-            sorting_functions[i](a, size);
+            sorting_functions[i](a_sort, size);
             // print statistics
             printf("%s\n", sort_names[i]);
             printf("%d elements, %d moves, %d compares", elements, moves, compares);
-            if (i == 2) {
+            if (i == 2 || i == 3) {
                 printf("\nMax stack size: %d", max_size);
             }
-            if (i == 3) {
-                printf("\nMax queue size: %d", max_size);
-            }
+            //if (i == 0) {
+            //printf("\nTime Complexity: %d", n);
+            //}
             // print elements
             for (uint32_t i = 0; i < elements; i += 1) {
                 if (i % 5 == 0) {
                     printf("\n");
                 }
-                printf("%13" PRIu32, a[i]);
+                printf("%13" PRIu32, a_sort[i]);
             }
             printf("\n");
         }
