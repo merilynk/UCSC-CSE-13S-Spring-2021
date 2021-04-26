@@ -17,14 +17,14 @@ void shell_sort(uint32_t arr[], uint32_t size) {
         for (uint32_t i = gap; i < size; i += 1) {
             uint32_t j = i;
             uint32_t temp = arr[i];
-	    moves += 1;
-	    while (j >= gap && less_than(temp, arr[j - gap])) {
+            moves += 1;
+            while (j >= gap && less_than(temp, arr[j - gap])) {
                 arr[j] = arr[j - gap];
                 moves += 1;
                 j -= gap;
             }
-	    arr[j] = temp;
-	    moves += 1;
+            arr[j] = temp;
+            moves += 1;
         }
     }
     return;

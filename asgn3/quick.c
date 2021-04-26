@@ -36,10 +36,11 @@ void quick_sort_stack(uint32_t arr[], uint32_t size) {
     int64_t lo = 0;
     int64_t hi = (int64_t) size - 1;
     Stack *stack = stack_create(size);
+    max_size = stack_size(stack);
     stack_push(stack, lo);
     stack_push(stack, hi);
     while (stack_size(stack) != 0) {
-	stack_pop(stack, &lo);
+        stack_pop(stack, &lo);
         stack_pop(stack, &hi);
         //stack_pop(stack, &lo);
         uint32_t p = partition(arr, lo, hi);
@@ -51,6 +52,9 @@ void quick_sort_stack(uint32_t arr[], uint32_t size) {
             stack_push(stack, p + 1);
             stack_push(stack, hi);
         }
+        if (stack_size(stack) > max_size) {
+            max_size = stack_size(stack);
+        }
     }
     return;
 }
@@ -61,6 +65,7 @@ void quick_sort_queue(uint32_t arr[], uint32_t size) {
     int64_t lo = 0;
     int64_t hi = size - 1;
     Queue *queue = queue_create(size);
+    max_size = queue_size(queue);
     enqueue(queue, lo);
     enqueue(queue, hi);
     while (queue_size(queue) != 0) {
@@ -74,6 +79,9 @@ void quick_sort_queue(uint32_t arr[], uint32_t size) {
         if (hi > p + 1) {
             enqueue(queue, p + 1);
             enqueue(queue, hi);
+        }
+        if (max_size < queue_size(queue)) {
+            max_size = queue_size(queue);
         }
     }
 }

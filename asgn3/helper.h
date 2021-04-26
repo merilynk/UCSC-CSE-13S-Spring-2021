@@ -13,4 +13,6 @@ int compares;
 
 int moves;
 
+uint32_t max_size;
+
 #endif

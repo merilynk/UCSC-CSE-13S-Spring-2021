@@ -42,11 +42,23 @@ int main(int argc, char **argv) {
             sorts = set_insert(sorts, STACKSORT);
             sorts = set_insert(sorts, QUEUESORT);
             args_entered = 1;
-	    break;
-        case 'b': sorts = set_insert(sorts, BUBBLE); args_entered = 1; break;
-        case 's': sorts = set_insert(sorts, SHELL); args_entered = 1; break;
-        case 'q': sorts = set_insert(sorts, STACKSORT); args_entered = 1; break;
-        case 'Q': sorts = set_insert(sorts, QUEUESORT); args_entered = 1; break;
+            break;
+        case 'b':
+            sorts = set_insert(sorts, BUBBLE);
+            args_entered = 1;
+            break;
+        case 's':
+            sorts = set_insert(sorts, SHELL);
+            args_entered = 1;
+            break;
+        case 'q':
+            sorts = set_insert(sorts, STACKSORT);
+            args_entered = 1;
+            break;
+        case 'Q':
+            sorts = set_insert(sorts, QUEUESORT);
+            args_entered = 1;
+            break;
         case 'r': seed = strtoul(optarg, NULL, 10); break;
         case 'n': size = strtoul(optarg, NULL, 10); break;
         case 'p':
@@ -55,41 +67,41 @@ int main(int argc, char **argv) {
                 elements = size;
             }
             break;
-	default:
-	    args_entered = 1;
-	    printf("Select at least one sort to perform.\n"
-		   "SYNOPSIS\n"
-		   "   A collection of comparison-based sorting algorithms.\n\n"
-		   "USAGE\n"
-		   "   ./sorting [-absqQ] [-r seed] [-n length] [-p elements]\n\n"
-		   "OPTIONS\n"
-		   "   -a              Enable all sorts.\n"
-		   "   -b              Enable Bubble Sort.\n"
-		   "   -s              Enable Shell Sort.\n"
-		   "   -q              Enable Quick Sort (Stack).\n"
-		   "   -Q              Enable Quick Sort (Queue).\n"
-		   "   -r seed         Specify random seed\n"
-		   "   -n length       Specify number of array elements.\n"
-		   "   -p elements     Specify number of elements to print.\n");
-	    break;
+        default:
+            args_entered = 1;
+            printf("Select at least one sort to perform.\n"
+                   "SYNOPSIS\n"
+                   "   A collection of comparison-based sorting algorithms.\n\n"
+                   "USAGE\n"
+                   "   ./sorting [-absqQ] [-r seed] [-n length] [-p elements]\n\n"
+                   "OPTIONS\n"
+                   "   -a              Enable all sorts.\n"
+                   "   -b              Enable Bubble Sort.\n"
+                   "   -s              Enable Shell Sort.\n"
+                   "   -q              Enable Quick Sort (Stack).\n"
+                   "   -Q              Enable Quick Sort (Queue).\n"
+                   "   -r seed         Specify random seed\n"
+                   "   -n length       Specify number of array elements.\n"
+                   "   -p elements     Specify number of elements to print.\n");
+            break;
         }
     }
 
     if (args_entered == 0) {
-	printf("Select at least one sort to perform.\n"
-		   "SYNOPSIS\n"
-		   "   A collection of comparison-based sorting algorithms.\n\n"
-		   "USAGE\n"
-		   "   ./sorting [-absqQ] [-r seed] [-n length] [-p elements]\n\n"
-		   "OPTIONS\n"
-		   "   -a              Enable all sorts.\n"
-		   "   -b              Enable Bubble Sort.\n"
-		   "   -s              Enable Shell Sort.\n"
-		   "   -q              Enable Quick Sort (Stack).\n"
-		   "   -Q              Enable Quick Sort (Queue).\n"
-		   "   -r seed         Specify random seed\n"
-		   "   -n length       Specify number of array elements.\n"
-		   "   -p elements     Specify number of elements to print.\n");
+        printf("Select at least one sort to perform.\n"
+               "SYNOPSIS\n"
+               "   A collection of comparison-based sorting algorithms.\n\n"
+               "USAGE\n"
+               "   ./sorting [-absqQ] [-r seed] [-n length] [-p elements]\n\n"
+               "OPTIONS\n"
+               "   -a              Enable all sorts.\n"
+               "   -b              Enable Bubble Sort.\n"
+               "   -s              Enable Shell Sort.\n"
+               "   -q              Enable Quick Sort (Stack).\n"
+               "   -Q              Enable Quick Sort (Queue).\n"
+               "   -r seed         Specify random seed\n"
+               "   -n length       Specify number of array elements.\n"
+               "   -p elements     Specify number of elements to print.\n");
     }
 
     for (int i = 0; i < 4; i += 1) {
@@ -97,7 +109,7 @@ int main(int argc, char **argv) {
         if (set_member(sorts, i)) {
             uint32_t *a = (uint32_t *) calloc(size, sizeof(uint32_t));
             srandom(seed);
-	    for (uint32_t i = 0; i < size; i += 1) {
+            for (uint32_t i = 0; i < size; i += 1) {
                 a[i] = random();
                 //printf("%d\n", a[i]);
             }
@@ -105,8 +117,11 @@ int main(int argc, char **argv) {
             // print statistics
             printf("%s\n", sort_names[i]);
             printf("%d elements, %d moves, %d compares", elements, moves, compares);
-            if ((i == 3) || (i == 2)) {
-                printf("\nMax stack size: x");
+            if (i == 2) {
+                printf("\nMax stack size: %d", max_size);
+            }
+            if (i == 3) {
+                printf("\nMax queue size: %d", max_size);
             }
             // print elements
             for (uint32_t i = 0; i < elements; i += 1) {

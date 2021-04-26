@@ -82,8 +82,8 @@ bool stack_pop(Stack *s, int64_t *x) {
     if (stack_empty(s)) {
         return false;
     }
-    *x = s->items[s->top];
     s->top -= 1;
+    *x = s->items[s->top];
     return true;
 }
 
