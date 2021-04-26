@@ -79,7 +79,7 @@ bool stack_push(Stack *s, int64_t x) {
 }
 
 bool stack_pop(Stack *s, int64_t *x) {
-    if (s->top == 0) {
+    if (stack_empty(s)) {
         return false;
     }
     *x = s->items[s->top];
