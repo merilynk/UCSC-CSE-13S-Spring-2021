@@ -13,4 +13,4 @@ clean:
 	rm -f tsp *.o
 
 format:
-	clang-format -i -style *.h *.c
+	clang-format -i -style=file *.h *.c
