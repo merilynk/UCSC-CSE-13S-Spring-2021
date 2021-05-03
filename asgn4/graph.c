@@ -68,7 +68,7 @@ uint32_t graph_vertices(Graph *G) {
 // k: weight of the edge
 // Returns true/false based on success of adding the edge
 bool graph_add_edge(Graph *G, uint32_t i, uint32_t j, uint32_t k) {
-    if ((i < G->vertices) && (j < G->vertices)) {
+    if ((i < G->vertices) && (j < G->vertices)) { // if vertices within bounds
         G->matrix[i][j] = k;
         if (G->undirected) {
             G->matrix[j][i] = k;
