@@ -1,4 +1,4 @@
-#Assignment 4: The Circumnavigations of Denver Long
+# Assignment 4: The Circumnavigations of Denver Long
 
 Given a graph, this program finds the shortest Hamiltonian Path using Depth First Search.
 
