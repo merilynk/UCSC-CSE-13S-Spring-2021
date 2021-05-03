@@ -77,8 +77,13 @@ bool stack_pop(Stack *s, uint32_t *x) {
 }
 
 void stack_copy(Stack *dst, Stack *src) {
+    uint32_t popped = 0;
+    for (uint32_t i = 0; i < dst->capacity; i += 1) {
+	stack_pop(dst, &popped);
+    }
     for (uint32_t i = 0; i < src->capacity; i += 1) {
         stack_push(dst, src->items[i]);
+        //printf("src item %d: %d  dst item %d: %d\n", i, src->items[i], i, dst->items[i]);
     }
     dst->top = src->top;
     return;
@@ -86,7 +91,7 @@ void stack_copy(Stack *dst, Stack *src) {
 
 void stack_print(Stack *s, FILE *outfile, char *cities[]) {
     for (uint32_t i = 0; i < s->top; i += 1) {
-        fprintf(outfile, "%d: %s", i, cities[s->items[i]]);
+        fprintf(outfile, "%s", cities[s->items[i]]);
         if (i + 1 != s->top) {
             fprintf(outfile, " -> ");
         }
