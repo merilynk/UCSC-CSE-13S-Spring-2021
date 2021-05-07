@@ -1,7 +1,7 @@
 CC = clang
 CFLAGS = -Wall -Wextra -Werror -Wpedantic
 
-all: encoder decoder error entropy
+all: encode decode error entropy
 
 encode: encode.o hamming.o bv.o bm.o
 	$(CC) -o encode $^
