@@ -7,7 +7,7 @@ encode: encode.o hamming.o bv.o bm.o
 	$(CC) -o encode $^
 
 decode: decode.o hamming.o bv.o bm.o
-	$(CC) -0 decode $^
+	$(CC) -o decode $^
 
 error: error.o
 	$(CC) -o error
