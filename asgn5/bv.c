@@ -16,8 +16,7 @@ struct BitVector {
 
 // Code referenced from Sahiti's section.
 
-BitVector *
-    bv_create(uint32_t length) {
+BitVector *bv_create(uint32_t length) {
     BitVector *v = (BitVector *) calloc(1, sizeof(BitVector));
     if (v) {
         v->length = length;
@@ -28,6 +27,10 @@ BitVector *
             items = length / 8 + 1;
         }
 	v->vector = (uint8_t *) calloc(items, sizeof(uint8_t));
+	if (!v->vector) {
+	    free(v);
+	    v = NULL;
+	}
     }
     return v;
 }
@@ -56,11 +59,16 @@ void bv_clr_bit(BitVector *v, uint32_t i) {
 }
 
 uint8_t bv_get_bit(BitVector *v, uint32_t i) {
-    return (v->vector[i / 8] &= (1 << (i % 8))) >> (i % 8);
+    return (v->vector[i / 8] >> (i % 8)) & 1;
 }
 
 void bv_xor_bit(BitVector *v, uint32_t i, uint8_t bit) {
-    bit ^= bv_get_bit(v, i);
+    if (bit == bv_get_bit(v, i)) {
+	bv_clr_bit(v, i);
+    }
+    else {
+	bv_set_bit(v, i);
+    }
     return;
 }
 

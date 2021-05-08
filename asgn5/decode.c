@@ -3,3 +3,5 @@
 // Decode
 
 #include "hamming.h"
+#include "bm.h"
+#include "bv.h"
