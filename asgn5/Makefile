@@ -3,10 +3,10 @@ CFLAGS = -Wall -Wextra -Werror -Wpedantic
 
 all: encode decode error entropy
 
-encode: encode.o hamming.o bv.o bm.o
+encode: encode.o hamming.o bv.o bm.o helper.o
 	$(CC) -o encode $^
 
-decode: decode.o hamming.o bv.o bm.o
+decode: decode.o hamming.o bv.o bm.o helper.o
 	$(CC) -o decode $^
 
 error: error.o
