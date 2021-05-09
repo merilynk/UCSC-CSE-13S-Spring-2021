@@ -2,7 +2,15 @@
 #define _HELPER_H_
 
 #include "bm.h"
+
 #include <stdint.h>
+
+// Variables for statistics.
+int total_bytes_processed;
+
+int uncorrected_errors;
+
+int corrected_errors;
 
 // Creates generator matrix.
 BitMatrix *create_generator_matrix(void);

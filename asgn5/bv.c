@@ -5,8 +5,8 @@
 #include "bv.h"
 
 #include <stdint.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 // Code provided in Assignment PDF
 struct BitVector {
@@ -26,11 +26,11 @@ BitVector *bv_create(uint32_t length) {
         } else {
             items = length / 8 + 1;
         }
-	v->vector = (uint8_t *) calloc(items, sizeof(uint8_t));
-	if (!v->vector) {
-	    free(v);
-	    v = NULL;
-	}
+        v->vector = (uint8_t *) calloc(items, sizeof(uint8_t));
+        if (!v->vector) {
+            free(v);
+            v = NULL;
+        }
     }
     return v;
 }
@@ -64,10 +64,9 @@ uint8_t bv_get_bit(BitVector *v, uint32_t i) {
 
 void bv_xor_bit(BitVector *v, uint32_t i, uint8_t bit) {
     if (bit == bv_get_bit(v, i)) {
-	bv_clr_bit(v, i);
-    }
-    else {
-	bv_set_bit(v, i);
+        bv_clr_bit(v, i);
+    } else {
+        bv_set_bit(v, i);
     }
     return;
 }
