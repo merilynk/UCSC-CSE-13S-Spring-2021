@@ -83,11 +83,10 @@ BitMatrix *bm_multiply(BitMatrix *A, BitMatrix *B) {
     BitMatrix *C = bm_create(A->rows, B->cols);
     uint8_t value = 0;
     for (uint32_t i = 0; i < A->rows; i ++) {
-	value = 0;
 	for (uint32_t j = 0; j < B->cols; j ++) {
 	    value = 0;
 	    for (uint32_t k = 0; k < A->cols; k ++) {
-		value ^= bm_get_bit(A, i, k) & bm_get_bit(B, k, j);
+		value ^= (bm_get_bit(A, i, k) & bm_get_bit(B, k, j));
 		if (value == 1) {
 		    bm_set_bit(C, i, j);
 		}

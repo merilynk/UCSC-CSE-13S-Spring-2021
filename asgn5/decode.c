@@ -5,3 +5,8 @@
 #include "hamming.h"
 #include "bm.h"
 #include "bv.h"
+#include "helper.h"
+
+int main(void) {
+
+}
