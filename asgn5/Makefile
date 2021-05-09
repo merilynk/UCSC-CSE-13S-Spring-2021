@@ -1,5 +1,6 @@
 CC = clang
 CFLAGS = -Wall -Wextra -Werror -Wpedantic
+LFLAGS = -lm
 
 all: encode decode error entropy
 
@@ -10,16 +11,16 @@ decode: decode.o hamming.o bv.o bm.o helper.o
 	$(CC) -o decode $^
 
 error: error.o
-	$(CC) -o error
+	$(CC) -o error error.o
 
 entropy: entropy.o
-	$(CC) -o entropy
+	$(CC) -o entropy entropy.o $(LFLAGS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -f encoder decoder error entropy *.o
+	rm -f encode decode error entropy *.o
 
 format:
-	clang-format -i style=file *.h *.c
+	clang-format -i -style=file *.h *.c
