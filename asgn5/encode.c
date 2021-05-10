@@ -70,8 +70,8 @@ int main(int argc, char **argv) {
     // getting input
     int c = 0;
     while ((c = fgetc(input_file)) != EOF) {
-        uint8_t msg1 = lower_nibble(c); // get upper nibble of byte
-        uint8_t msg2 = upper_nibble(c); // get lower nibble of byte
+        uint8_t msg1 = lower_nibble(c); // get lower nibble of byte
+        uint8_t msg2 = upper_nibble(c); // get upper nibble of byte
         uint8_t code1 = ham_encode(G, msg1); // encode
         uint8_t code2 = ham_encode(G, msg2);
         fputc(code1, output_file); // print to output

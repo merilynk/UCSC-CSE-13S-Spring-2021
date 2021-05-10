@@ -16,16 +16,20 @@ struct BitVector {
 
 // Code referenced from Sahiti's section.
 
+// Create and allocate memory for bit vector.
 BitVector *bv_create(uint32_t length) {
     BitVector *v = (BitVector *) calloc(1, sizeof(BitVector));
     if (v) {
         v->length = length;
         uint8_t items = 0;
+
+        // Rounding length
         if (length % 8 == 0) {
             items = length / 8;
         } else {
             items = length / 8 + 1;
         }
+
         v->vector = (uint8_t *) calloc(items, sizeof(uint8_t));
         if (!v->vector) {
             free(v);
@@ -35,6 +39,7 @@ BitVector *bv_create(uint32_t length) {
     return v;
 }
 
+// Delete vector by freeing memory and nulling pointers
 void bv_delete(BitVector **v) {
     if (*v && (*v)->vector) {
         free((*v)->vector);
@@ -44,24 +49,29 @@ void bv_delete(BitVector **v) {
     return;
 }
 
+// Returns length of bit vector
 uint32_t bv_length(BitVector *v) {
     return v->length;
 }
 
+// Sets a bit in the bit vector at index, i.
 void bv_set_bit(BitVector *v, uint32_t i) {
     v->vector[i / 8] |= (1 << (i % 8));
     return;
 }
 
+// Clears a bit in the bit vector at index, i.
 void bv_clr_bit(BitVector *v, uint32_t i) {
     v->vector[i / 8] &= ~(1 << (i % 8));
     return;
 }
 
+// Gets the bit at index, i.
 uint8_t bv_get_bit(BitVector *v, uint32_t i) {
     return (v->vector[i / 8] >> (i % 8)) & 1;
 }
 
+// XORs a bit at index, i with another bit.
 void bv_xor_bit(BitVector *v, uint32_t i, uint8_t bit) {
     if (bit == bv_get_bit(v, i)) {
         bv_clr_bit(v, i);
@@ -71,6 +81,7 @@ void bv_xor_bit(BitVector *v, uint32_t i, uint8_t bit) {
     return;
 }
 
+// Print bit vector.
 void bv_print(BitVector *v) {
     printf("Length: %u bits\n", v->length);
     for (uint32_t i = 0; i < v->length; i++) {

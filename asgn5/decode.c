@@ -84,12 +84,9 @@ int main(int argc, char **argv) {
 
     while ((c = fgetc(input_file)) != EOF) {
         total_bytes_processed += 1;
-        printf("read: %d\n", c);
         uint8_t code1 = lower_nibble(c); // get lower nibble of byte
         uint8_t code2 = upper_nibble(c); // get upper nibble of byte
-        printf("\nDECODE LOWER\n");
         ham_decode(Ht, code1, &msg1); // decode
-        printf("\nDECODE UPPER\n");
         ham_decode(Ht, code2, &msg2);
         fputc(pack_byte(msg2, msg1), output_file); // print to output
     }

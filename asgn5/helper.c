@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 
+// Creates and sets values of generator matrix
 BitMatrix *create_generator_matrix(void) {
     BitMatrix *Generator = bm_create(4, 8);
     bm_set_bit(Generator, 0, 0);
@@ -29,6 +30,7 @@ BitMatrix *create_generator_matrix(void) {
     return Generator;
 }
 
+// Creates and sets values of H transpose matrix
 BitMatrix *create_H_transpose_matrix(void) {
     BitMatrix *H_transpose = bm_create(8, 4);
     bm_set_bit(H_transpose, 0, 1);
@@ -50,14 +52,17 @@ BitMatrix *create_H_transpose_matrix(void) {
     return H_transpose;
 }
 
+// Get lower nibble of byte
 uint8_t lower_nibble(uint8_t val) {
     return val & 0xF;
 }
 
+// Get upper nibble of byte
 uint8_t upper_nibble(uint8_t val) {
     return val >> 4;
 }
 
+// Reconstruct byte from nibbles
 uint8_t pack_byte(uint8_t upper, uint8_t lower) {
     return (upper << 4) | (lower & 0xF);
 }
