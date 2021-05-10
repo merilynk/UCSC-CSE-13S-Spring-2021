@@ -85,21 +85,20 @@ int main(int argc, char **argv) {
     while ((c = fgetc(input_file)) != EOF) {
         total_bytes_processed += 1;
         printf("read: %d\n", c);
-        uint8_t code1 = lower_nibble(c); // get upper nibble of byte
-        uint8_t code2 = upper_nibble(c); // get lower nibble of byte
+        uint8_t code1 = lower_nibble(c); // get lower nibble of byte
+        uint8_t code2 = upper_nibble(c); // get upper nibble of byte
         printf("\nDECODE LOWER\n");
         ham_decode(Ht, code1, &msg1); // decode
         printf("\nDECODE UPPER\n");
         ham_decode(Ht, code2, &msg2);
-        fputc(msg1, output_file); // print to output
-        fputc(msg2, output_file);
+        fputc(pack_byte(msg2, msg1), output_file); // print to output
     }
 
     if (verbose) {
         fprintf(stderr, "Total bytes processed: %d\n", total_bytes_processed);
         fprintf(stderr, "Uncorrected errors: %d\n", uncorrected_errors);
         fprintf(stderr, "Corrected errors: %d\n", corrected_errors);
-        fprintf(stderr, "Error rate: %d\n", uncorrected_errors / total_bytes_processed);
+        fprintf(stderr, "Error rate: %f\n", (double) uncorrected_errors / total_bytes_processed);
     }
 
     // close files
