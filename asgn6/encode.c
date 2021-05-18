@@ -2,10 +2,9 @@
 // CSE 13S Spring 2021
 // encode.c
 
-#include "pq.h"
-#include "node.h"
 #include "io.h"
+#include "node.h"
+#include "pq.h"
 
 int main(void) {
-
 }

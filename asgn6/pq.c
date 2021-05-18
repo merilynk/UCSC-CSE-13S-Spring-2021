@@ -3,3 +3,9 @@
 // pq.c
 
 #include "pq.h"
+
+#include "node.h"
+
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
