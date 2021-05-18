@@ -3,6 +3,7 @@
 // stack.c
 
 #include "stack.h"
+
 #include "node.h"
 
 #include <stdint.h>
@@ -72,7 +73,7 @@ bool stack_pop(Stack *s, Node **n) {
 
 void stack_print(Stack *s) {
     for (uint32_t i = 0; i < stack_size(s); i += 1) {
-	node_print(&s->items[i]);
+        node_print(&s->items[i]);
     }
     return;
 }

@@ -3,12 +3,13 @@
 // code.c
 
 #include "code.h"
+
 #include "defines.h"
 
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
 
 Code code_init(void) {
     Code c;
@@ -30,7 +31,7 @@ bool code_full(Code *c) {
 
 bool code_push_bit(Code *c, uint8_t bit) {
     if (code_full(c)) {
-	return false;
+        return false;
     }
     c->bits[c->top] = bit;
     c->top += 1;
@@ -39,10 +40,9 @@ bool code_push_bit(Code *c, uint8_t bit) {
 
 bool code_pop_bit(Code *c, uint8_t *bit) {
     if (code_empty(c)) {
-	return false;
+        return false;
     }
     c->top -= 1;
     *bit = c->bits[c->top];
     return true;
 }
-
