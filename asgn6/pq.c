@@ -2,6 +2,8 @@
 // CSE 13S Spring 2021
 // pq.c
 
+//#define __DEBUG__
+
 #include "pq.h"
 
 #include "node.h"
@@ -16,17 +18,21 @@ struct PriorityQueue {
     uint32_t tail;
     uint32_t capacity;
     uint32_t size;
-    Node *nodes;
+    Node **nodes;
 };
+
+#define next(q, n) ((n + 1) % q->capacity)
+#define prev(q, n) ((n + q->capacity - 1) % q->capacity)
 
 PriorityQueue *pq_create(uint32_t capacity) {
     PriorityQueue *pq = (PriorityQueue *) malloc(sizeof(PriorityQueue));
     if (pq) {
         pq->head = 0;
         pq->tail = 0;
+        pq->size = 0;
         pq->capacity = capacity;
-        pq->nodes = (Node *) calloc(capacity, sizeof(Node));
-        if (pq->nodes) {
+        pq->nodes = (Node **) calloc(capacity, sizeof(Node *));
+        if (!pq->nodes) {
             free(pq);
             pq = NULL;
         }
@@ -60,17 +66,28 @@ bool enqueue(PriorityQueue *q, Node *n) {
         return false;
     }
     uint32_t mark = q->tail;
+#ifdef __DEBUG__
+    printf("enquing, head: %d, tail: %d\n", q->head, q->tail);
+#endif
     while (mark != q->head) {
         if (q->nodes[(mark + q->capacity - 1) % q->capacity]->frequency > n->frequency) {
             q->nodes[mark] = q->nodes[(mark + q->capacity - 1) % q->capacity];
-            q->nodes[(mark + q->capacity - 1) % q->capacity] = *n;
-            mark -= 1;
+            q->nodes[(mark + q->capacity - 1) % q->capacity] = n;
+            mark = prev(q, mark);
         } else {
-            q->nodes[mark] = *n;
-            q->tail = (q->tail + 1) % q->capacity;
+#ifdef __DEBUG__
+            printf("location was found before head: %d\n", (mark + q->capacity - 1) % q->capacity);
+            node_print(q->nodes[(mark + q->capacity - 1) % q->capacity]);
+#endif
             break;
         }
     }
+#ifdef __DEBUG__
+    printf("mark is :%d\n", mark);
+#endif
+    q->nodes[mark] = n;
+    q->tail = (q->tail + 1) % q->capacity;
+    q->size++;
     return true;
 }
 
@@ -78,7 +95,7 @@ bool dequeue(PriorityQueue *q, Node **n) {
     if (pq_empty(q)) {
         return false;
     }
-    *n = &q->nodes[q->head];
+    *n = q->nodes[q->head];
     q->size -= 1;
     q->head += 1;
     if (q->head == q->capacity) {
@@ -88,7 +105,7 @@ bool dequeue(PriorityQueue *q, Node **n) {
 }
 
 void pq_print(PriorityQueue *q) {
-    for (uint32_t i = q->head; i != q->tail; i += 1) {
-        node_print(&q->nodes[i % q->capacity]);
+    for (uint32_t i = 0, j = q->head; i < q->size; i += 1, j = (1 + i) % q->capacity) {
+        node_print(q->nodes[j]);
     }
 }

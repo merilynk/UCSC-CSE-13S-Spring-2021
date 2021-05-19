@@ -4,7 +4,7 @@ LFLAGS = -lm
 
 all: encode decode entropy
 
-encode: encode.o huffman.o pq.o node.o code.o io.o
+encode: encode.o huffman.o stack.o pq.o node.o code.o io.o
 	$(CC) -o encode $^
 
 decode: decode.o huffman.o stack.o node.o code.o io.o

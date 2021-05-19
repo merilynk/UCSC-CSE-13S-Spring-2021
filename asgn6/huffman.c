@@ -2,4 +2,4 @@
 // CSE 13S Spring 2021
 // hamming.c
 
-#include "huffman..h"
+#include "huffman.h"

@@ -36,9 +36,11 @@ void node_print(Node *n) {
     printf("Symbol: %u", n->symbol);
     printf(" Frequency: %lu\n", n->frequency);
     if (n->left) {
+        printf("Left child: ");
         node_print(n->left);
     }
     if (n->right) {
+        printf("Right child: ");
         node_print(n->right);
     }
     return;
