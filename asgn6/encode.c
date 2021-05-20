@@ -52,7 +52,6 @@ int main(void) {
     dequeue(node_pq, &popped);
     printf("popped: ");
     node_print(popped);
-    printf("\n\n");
     printf("PQ after pop:\n");
     pq_print(node_pq);
     printf("empty? %d\n", pq_empty(node_pq));
@@ -67,8 +66,25 @@ int main(void) {
     dequeue(node_pq, &popped);
     printf("popped: ");
     node_print(popped);
-    printf("\n");
     pq_print(node_pq);
+
+    printf("\nCODE TESTING\n");
+    Code c = code_init();
+    printf("code empty? %d\n", code_empty(&c));
+    printf("code full? %d\n", code_full(&c));
+    code_push_bit(&c, 1);
+    code_push_bit(&c, 2);
+    code_push_bit(&c, 3);
+    code_print(&c);
+    uint8_t b = 0;
+    code_pop_bit(&c, &b);
+    printf("popped bit: %u\n", b);
+    code_print(&c);
+    printf("code empty? %d\n", code_empty(&c));
+    printf("code full? %d\n", code_full(&c));
+
+    printf("\nIO TESTING\n");
+
 
     node_delete(&left);
     node_delete(&right);

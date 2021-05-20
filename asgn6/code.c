@@ -46,3 +46,11 @@ bool code_pop_bit(Code *c, uint8_t *bit) {
     *bit = c->bits[c->top];
     return true;
 }
+
+void code_print(Code *c) {
+    printf("Top: %u\n", c->top);
+    for (uint8_t i = 0; i < c->top; i ++) {
+	printf("  %u: %u", i, c->bits[i]);
+    }
+    printf("\n");
+}
