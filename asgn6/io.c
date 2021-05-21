@@ -57,19 +57,20 @@ bool read_bit(int infile, uint8_t *bit) {
     return true;
 }
 
+static uint8_t w_buffer[BLOCK];
 static int buffer_index = 0;
 
 void write_code(int outfile, Code *c) {
     for (uint32_t i = 0; i < c->top; i += 1) {
-	if (((c->bits[i / 8] >> (i % 8)) & 1) == 1) {
-	    buffer[i / 8] |= (1 << (i % 8));
+	if (c->bits[i] == 1) {
+	    w_buffer[i / 8] |= (1 << (i % 8));
 	}
 	else {
-	    buffer[i / 8] &= ~(1 << (i % 8));
+	    w_buffer[i / 8] &= ~(1 << (i % 8));
 	}
 	buffer_index += 1;
 	if (buffer_index == 8 * BLOCK) {
-	    write_bytes(outfile, buffer, BLOCK);
+	    write_bytes(outfile, w_buffer, BLOCK);
 	    buffer_index = 0;
 	}
     }
@@ -78,7 +79,14 @@ void write_code(int outfile, Code *c) {
 
 void flush_codes(int outfile) {
     if (buffer_index > 0) {
-	write_bytes(outfile, buffer, buffer_index);
+	if (buffer_index % 8 != 0) {
+	    w_buffer[buffer_index / 8] &= (0xFF >> (8 - buffer_index % 8));  // zero out rest of bits
+	    buffer_index = buffer_index / 8 + 1;
+	}
+	else {
+	    buffer_index /= 8;
+	}
+	write_bytes(outfile, w_buffer, buffer_index);
     }
 return;
 }
