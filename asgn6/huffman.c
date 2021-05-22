@@ -85,7 +85,11 @@ void delete_tree(Node **root) {
     if (*root == NULL) {
 	return;
     }
-    delete_tree(&(*root)->left);
-    delete_tree(&(*root)->right);
-    node_delete(root);
+    if ((*root)->left) {
+	delete_tree(&(*root)->left);
+    }
+    if ((*root)->right) {
+	delete_tree(&(*root)->right);
+    }
+    node_delete(&(*root));
 }
