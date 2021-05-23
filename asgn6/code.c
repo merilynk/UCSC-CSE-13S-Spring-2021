@@ -10,10 +10,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 Code code_init(void) {
-    Code c;
+    static Code c;
     c.top = 0;
+    memset(c.bits, 0, sizeof(c.bits));
     return c;
 }
 
@@ -49,8 +51,8 @@ bool code_pop_bit(Code *c, uint8_t *bit) {
 
 void code_print(Code *c) {
     printf("Top: %u\n", c->top);
-    for (uint8_t i = 0; i < c->top; i ++) {
-	printf("  %u: %u", i, c->bits[i]);
+    for (uint8_t i = 0; i < c->top; i++) {
+        printf("  %u: %u", i, c->bits[i]);
     }
     printf("\n");
 }

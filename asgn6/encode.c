@@ -2,6 +2,8 @@
 // CSE 13S Spring 2021
 // encode.c
 
+#define __DEBUG__
+
 #include "code.h"
 #include "io.h"
 #include "node.h"
@@ -25,12 +27,18 @@ void tree_dump(Node *n, int outfile) {
     if (!(n->left && n->right)) {
 	uint8_t tree_buf[2] = {'L', n->symbol };
 	write_bytes(outfile, tree_buf, 2);
+#ifdef __DEBUG__
+	fprintf(stderr, "%c%c", 'L', n->symbol);
+#endif
     }
     else {
 	tree_dump(n->left, outfile);
 	tree_dump(n->right, outfile);
 	uint8_t tree_buf[1] = { 'I' };
 	write_bytes(outfile, tree_buf, 1);
+#ifdef __DEBUG__
+	fprintf(stderr, "%c", 'I');
+#endif
     }
     return;
 }
@@ -70,28 +78,55 @@ int main(int argc, char **argv) {
 	}
     }
 
-    uint64_t histogram[ALPHABET];  // histogram
+    uint64_t histogram[ALPHABET] = {0};  // histogram
 
     int b = 0;  // num of bytes read
-    uint8_t buffer[BLOCK];
-
+    uint8_t buffer[BLOCK] = {0};
+#ifdef __DEBUG__
+    fprintf(stderr, "loading...");
+#endif
     //create histogram
     while ((b = read_bytes(infile, buffer, BLOCK)) > 0) {
 	for (uint64_t i = 0; i < BLOCK; i += 1) {
 	    histogram[buffer[i]] += 1;
 	}
     }
+#ifdef __DEBUG__
+    fprintf(stderr,"done\n");
+#endif
 
     histogram[0] ++;
     histogram[ALPHABET - 1] ++;
 
-    build_tree(histogram);  // construct huffman tree
+
+#ifdef __DEBUG__
+    fprintf(stderr, "building tree...");
+#endif
+    Node *root;
+    root = build_tree(histogram);  // construct huffman tree
+
+#ifdef __DEBUG__
+    fprintf(stderr, "done\n");
+#endif
 
     // construct table of codes
+#ifdef __DEBUG__
+    fprintf(stderr, "creating code tables...");
+#endif
     Code code_table[ALPHABET];
-    Node *root = NULL;
+    for(int i = 0; i < ALPHABET; i++){
+	code_table[i] = code_init();
+    }
     build_codes(root, code_table);
 
+#ifdef __DEBUG__
+    fprintf(stderr, "done.\n");
+#endif
+
+
+#ifdef __DEBUG__
+    fprintf(stderr, "writing header...");
+#endif
     // construct header
     Header h;
     h.magic = MAGIC;
@@ -109,18 +144,57 @@ int main(int argc, char **argv) {
     h.tree_size = (3 * unique_symbols) - 1;
     h.file_size = statbuf.st_size;
 
-    write_bytes(outfile, (uint8_t *) &h, sizeof(Header));  // write header to outfile
+    write_bytes(outfile, (uint8_t *) &h, sizeof(h));  // write header to outfile
 
+#ifdef __DEBUG__
+    fprintf(stderr, "size of header = %lu size of file: %lu..", sizeof(h), h.file_size);
+    fprintf(stderr, "done\n");
+#endif
+
+
+#ifdef __DEBUG__
+    fprintf(stderr, "writing tree...");
+#endif
     tree_dump(root, outfile);  // print tree out to outfile
 
-    for (uint64_t c = 0; c < ALPHABET; c += 1) {
-	write_code(outfile, &code_table[c]);
+#ifdef __DEBUG__
+    fprintf(stderr, "done\n");
+#endif
+
+#ifdef __DEBUG__
+    fprintf(stderr, "writing compressed file...");
+#endif
+    b = 0;
+    lseek(infile, 0, SEEK_SET);
+    uint8_t c_buf[BLOCK];
+#ifdef __DEBUG__
+    //fprintf(stderr, "bytes read: %u", (b = read_bytes(infile, c_buf, BLOCK)));
+#endif
+    while ((b = read_bytes(infile, c_buf, BLOCK)) > 0) {
+#ifdef __DEBUG__
+	fprintf(stderr, "bytes: %u ", b);
+	fprintf(stderr, "reading from infile ");
+#endif
+	for (int symbol = 0; symbol < b; symbol += 1) {
+	    write_code(outfile, &code_table[c_buf[symbol]]);
+#ifdef __DEBUG__
+	    fprintf(stderr, ".");
+	    fprintf(stderr, "%d: %d", symbol, c_buf[symbol]);
+	    code_print(&code_table[c_buf[symbol]]);
+#endif
+	}
     }
     flush_codes(outfile);
-
+#ifdef __DEBUG__
+    fprintf(stderr, "done.\n");
+    fprintf(stderr, "finalizing...");
+#endif
     close(infile);
     close(outfile);
 
+#ifdef __DEBUG__
+    fprintf(stderr, "done\n");
+#endif
     // free memory
     delete_tree(&root);
 

@@ -17,7 +17,7 @@ entropy: entropy.o
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -f encode decode error entropy *.o
+	rm -f encode decode entropy *.o
 
 format:
 	clang-format -i -style=file *.h *.c

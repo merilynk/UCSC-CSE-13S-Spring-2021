@@ -2,8 +2,6 @@
 // CSE 13S Spring 2021
 // pq.c
 
-//#define __DEBUG__
-
 #include "pq.h"
 
 #include "node.h"
