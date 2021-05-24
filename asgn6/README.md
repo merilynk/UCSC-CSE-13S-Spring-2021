@@ -26,4 +26,4 @@ make clean
 ```
 
 ## Scan-Build Errors
-Program passes scan-build with no bugs but with a couple of errors that do not affect the funning of the program.
+Program passes scan-build with no bugs but with a couple of errors that do not affect the running of the program.
