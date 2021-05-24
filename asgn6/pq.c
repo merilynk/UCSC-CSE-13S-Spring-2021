@@ -3,6 +3,7 @@
 // pq.c
 
 #include "pq.h"
+
 #include "node.h"
 
 #include <stdbool.h>
@@ -11,11 +12,11 @@
 #include <stdlib.h>
 
 struct PriorityQueue {
-    uint32_t head;  // index of the start of the queue
-    uint32_t tail;  // index of end of queue
-    uint32_t capacity;  // max queue size
-    uint32_t size;  // size of queue
-    Node **nodes;  // array of nodes
+    uint32_t head; // index of the start of the queue
+    uint32_t tail; // index of end of queue
+    uint32_t capacity; // max queue size
+    uint32_t size; // size of queue
+    Node **nodes; // array of nodes
 };
 
 // Priority queue constructor
@@ -70,7 +71,7 @@ bool enqueue(PriorityQueue *q, Node *n) {
         if (q->nodes[(mark + q->capacity - 1) % q->capacity]->frequency > n->frequency) {
             q->nodes[mark] = q->nodes[(mark + q->capacity - 1) % q->capacity];
             q->nodes[(mark + q->capacity - 1) % q->capacity] = n;
-            mark = (n + q->capacity - 1) % q->capacity
+            mark = (mark + q->capacity - 1) % q->capacity;
         } else {
             break;
         }

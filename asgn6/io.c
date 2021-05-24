@@ -16,7 +16,7 @@ int read_bytes(int infile, uint8_t *buf, int nbytes) {
     int total = 0;
     int b;
     while (total < nbytes && ((b = read(infile, buf + total, nbytes - total)) > 0)) {
-	total += b;
+        total += b;
     }
     if (b < 0) {
         return b;
@@ -29,7 +29,7 @@ int write_bytes(int outfile, uint8_t *buf, int nbytes) {
     int total = 0;
     int b;
     while (total < nbytes && ((b = write(outfile, buf + total, nbytes - total)) > 0)) {
-	total += b;
+        total += b;
     }
     if (b < 0) {
         return b;
@@ -67,8 +67,8 @@ static int buffer_index = 0;
 // Writes code to outfile
 void write_code(int outfile, Code *c) {
     //if the current byte is new, clear it first
-    if (buffer_index*8 < BLOCK && buffer_index % 8 == 0){
-	w_buffer[buffer_index / 8] = 0;
+    if (buffer_index * 8 < BLOCK && buffer_index % 8 == 0) {
+        w_buffer[buffer_index / 8] = 0;
     }
 
     // loop through code to set bit in buffer

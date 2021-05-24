@@ -30,7 +30,6 @@ bool code_empty(Code *c) {
     return c->top == 0;
 }
 
-
 // Returns if the code is full
 bool code_full(Code *c) {
     return c->top == MAX_CODE_SIZE;

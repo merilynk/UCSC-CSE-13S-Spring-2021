@@ -26,19 +26,17 @@ void tree_walk(int infile, int outfile, Node *n, uint64_t file_size) {
     uint8_t bit;
     uint64_t symbols_written = 0;
     while (symbols_written != file_size) {
-	read_bit(infile, &bit);
-	if (!(n->left && n->right)) {
-	    uint8_t buf[1] = { n->symbol };
-	    write_bytes(outfile, buf, 1);
-	}
-	else {
-	    if (bit == 0) {
-		tree_walk(infile, outfile, n->left, file_size);
-	    }
-	    else if (bit == 1) {
-		tree_walk(infile, outfile, n->right, file_size);
-	    }
-	}
+        read_bit(infile, &bit);
+        if (!(n->left && n->right)) {
+            uint8_t buf[1] = { n->symbol };
+            write_bytes(outfile, buf, 1);
+        } else {
+            if (bit == 0) {
+                tree_walk(infile, outfile, n->left, file_size);
+            } else if (bit == 1) {
+                tree_walk(infile, outfile, n->right, file_size);
+            }
+        }
     }
 }
 
@@ -50,7 +48,7 @@ void print_help(void) {
            "./encode [-h] [-v] [-i infile] [-o outfile]\n\n"
            "OPTIONS\n"
            "  -h            Program usage and help.\n"
-	   "  -v            Print decompression statistics.\n"
+           "  -v            Print decompression statistics.\n"
            "  -i infile     Input data to decompress.\n"
            "  -o outfile    Output of decompressed data.\n");
     return;
@@ -68,25 +66,22 @@ int main(int argc, char **argv) {
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
 
         switch (opt) {
-        case 'h':
-            print_help();
-            return 0;
+        case 'h': print_help(); return 0;
         case 'i':
-            infile = open(optarg, O_RDONLY);  // open file for reading
+            infile = open(optarg, O_RDONLY); // open file for reading
             if (infile < 0) {
                 fprintf(stderr, "Error: cannot open infile\n");
             }
             break;
         case 'o':
-            outfile = open(optarg, O_WRONLY | O_CREAT);  // open file for writing, create if not existing yet
+            outfile = open(
+                optarg, O_WRONLY | O_CREAT); // open file for writing, create if not existing yet
             if (outfile < 0) {
                 fprintf(stderr, "Error cannot open outfile\n");
             }
             break;
         case 'v': verbose = true; break;
-        default:
-            print_help();
-            return 0;
+        default: print_help(); return 0;
         }
     }
 
@@ -96,24 +91,25 @@ int main(int argc, char **argv) {
 
     // verify magic number
     if (h.magic != MAGIC) {
-	fprintf(stderr, "Invalid magic number.\n");
-	return 0;
+        fprintf(stderr, "Invalid magic number.\n");
+        return 0;
     }
 
-    fchmod(outfile, h.permissions);  // setting file permissions of outfile
+    fchmod(outfile, h.permissions); // setting file permissions of outfile
 
-    uint8_t dumped_tree[h.tree_size];  // array to store dumped tree from infile
-    read_bytes(infile, dumped_tree, h.tree_size);  // reading in dumped tree
+    uint8_t dumped_tree[h.tree_size]; // array to store dumped tree from infile
+    read_bytes(infile, dumped_tree, h.tree_size); // reading in dumped tree
 
     Node *root;
-    root = rebuild_tree(h.tree_size, dumped_tree);  // reconstruct huffman tree
+    root = rebuild_tree(h.tree_size, dumped_tree); // reconstruct huffman tree
 
     // walk down tree to write out symbols
     tree_walk(infile, outfile, root, h.file_size);
 
     // print stats
     if (verbose) {
-	fprintf(stderr, "Compressed file size:  bytes\nDecompressed file size:  bytes\nSpace saving:  %%\n");
+        fprintf(stderr,
+            "Compressed file size:  bytes\nDecompressed file size:  bytes\nSpace saving:  %%\n");
     }
 
     // close files

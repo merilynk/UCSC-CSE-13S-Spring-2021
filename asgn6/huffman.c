@@ -44,7 +44,7 @@ Node *build_tree(uint64_t hist[static ALPHABET]) {
 // Recursive post order traversal of tree to create code table.
 void post_order_traversal(Node *n, Code table[static ALPHABET], Code c) {
     if (!(n->left && n->right)) {
-        table[n->symbol] = c;  // node is a leaf
+        table[n->symbol] = c; // node is a leaf
     } else {
         code_push_bit(&c, 0);
         post_order_traversal(n->left, table, c);
@@ -70,11 +70,11 @@ Node *rebuild_tree(uint16_t nbytes, uint8_t tree_dump[static nbytes]) {
     Node *parent;
 
     for (uint8_t i = 0; i < nbytes; i++) {
-        if (tree_dump[i] == 'L') {  // leaf node
+        if (tree_dump[i] == 'L') { // leaf node
             Node *leaf = node_create(tree_dump[i + 1], 0);
             stack_push(nodes_stack, leaf);
             i++;
-        } else if (tree_dump[i] == 'I') {  // interior node
+        } else if (tree_dump[i] == 'I') { // interior node
             Node *left;
             Node *right;
             stack_pop(nodes_stack, &right);
