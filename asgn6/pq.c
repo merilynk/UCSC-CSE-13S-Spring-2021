@@ -3,7 +3,6 @@
 // pq.c
 
 #include "pq.h"
-
 #include "node.h"
 
 #include <stdbool.h>
@@ -12,16 +11,14 @@
 #include <stdlib.h>
 
 struct PriorityQueue {
-    uint32_t head;
-    uint32_t tail;
-    uint32_t capacity;
-    uint32_t size;
-    Node **nodes;
+    uint32_t head;  // index of the start of the queue
+    uint32_t tail;  // index of end of queue
+    uint32_t capacity;  // max queue size
+    uint32_t size;  // size of queue
+    Node **nodes;  // array of nodes
 };
 
-#define next(q, n) ((n + 1) % q->capacity)
-#define prev(q, n) ((n + q->capacity - 1) % q->capacity)
-
+// Priority queue constructor
 PriorityQueue *pq_create(uint32_t capacity) {
     PriorityQueue *pq = (PriorityQueue *) malloc(sizeof(PriorityQueue));
     if (pq) {
@@ -38,6 +35,7 @@ PriorityQueue *pq_create(uint32_t capacity) {
     return pq;
 }
 
+// Priority queue deconstructor
 void pq_delete(PriorityQueue **q) {
     if (*q && (*q)->nodes) {
         free((*q)->nodes);
@@ -47,48 +45,43 @@ void pq_delete(PriorityQueue **q) {
     return;
 }
 
+// Returns true if queue is empty
 bool pq_empty(PriorityQueue *q) {
     return q->size == 0;
 }
 
+// Returns true if queue is full
 bool pq_full(PriorityQueue *q) {
     return q->size == q->capacity;
 }
 
+// Returns size of queue
 uint32_t pq_size(PriorityQueue *q) {
     return q->size;
 }
 
+// Adds a node in the queue and sorts it into order
 bool enqueue(PriorityQueue *q, Node *n) {
     if (pq_full(q)) {
         return false;
     }
     uint32_t mark = q->tail;
-#ifdef __DEBUG__
-    printf("enquing, head: %d, tail: %d\n", q->head, q->tail);
-#endif
     while (mark != q->head) {
         if (q->nodes[(mark + q->capacity - 1) % q->capacity]->frequency > n->frequency) {
             q->nodes[mark] = q->nodes[(mark + q->capacity - 1) % q->capacity];
             q->nodes[(mark + q->capacity - 1) % q->capacity] = n;
-            mark = prev(q, mark);
+            mark = (n + q->capacity - 1) % q->capacity
         } else {
-#ifdef __DEBUG__
-            printf("location was found before head: %d\n", (mark + q->capacity - 1) % q->capacity);
-            node_print(q->nodes[(mark + q->capacity - 1) % q->capacity]);
-#endif
             break;
         }
     }
-#ifdef __DEBUG__
-    printf("mark is :%d\n", mark);
-#endif
     q->nodes[mark] = n;
     q->tail = (q->tail + 1) % q->capacity;
     q->size++;
     return true;
 }
 
+// Removes the node at the head of the queue
 bool dequeue(PriorityQueue *q, Node **n) {
     if (pq_empty(q)) {
         return false;
@@ -102,6 +95,7 @@ bool dequeue(PriorityQueue *q, Node **n) {
     return true;
 }
 
+// Prints the priority queue.
 void pq_print(PriorityQueue *q) {
     for (uint32_t i = 0, j = q->head; i < q->size; i += 1, j = (1 + i) % q->capacity) {
         node_print(q->nodes[j]);

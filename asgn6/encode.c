@@ -2,8 +2,6 @@
 // CSE 13S Spring 2021
 // encode.c
 
-#define __DEBUG__
-
 #include "code.h"
 #include "io.h"
 #include "node.h"
@@ -23,23 +21,32 @@
 
 #define OPTIONS "hi:o:v"
 
+// Writes out a dump of the tree to the outfile.
 void tree_dump(Node *n, int outfile) {
     if (!(n->left && n->right)) {
 	uint8_t tree_buf[2] = {'L', n->symbol };
 	write_bytes(outfile, tree_buf, 2);
-#ifdef __DEBUG__
-	fprintf(stderr, "%c%c", 'L', n->symbol);
-#endif
     }
     else {
 	tree_dump(n->left, outfile);
 	tree_dump(n->right, outfile);
 	uint8_t tree_buf[1] = { 'I' };
 	write_bytes(outfile, tree_buf, 1);
-#ifdef __DEBUG__
-	fprintf(stderr, "%c", 'I');
-#endif
     }
+    return;
+}
+
+// Prints help message.
+void print_help(void) {
+    printf("SYNOPSIS\n"
+           "A Huffman encoder.\n\n"
+           "USAGE\n"
+           "./encode [-h] [-i infile] [-o outfile]\n\n"
+           "OPTIONS\n"
+           "  -h            Program usage and help.\n"
+	   "  -v            Print compression statistics.\n"
+           "  -i infile     Input data to compress.\n"
+           "  -o outfile    Output of compressed data.\n");
     return;
 }
 
@@ -50,21 +57,22 @@ int main(int argc, char **argv) {
 
     int opt = 0;
     bool verbose = false;  // true if printing compression stats
+
+    // parse command line options
     while((opt = getopt(argc, argv, OPTIONS)) != -1) {
 
 	switch (opt) {
 	case 'h':
-	    // print help msg
+	    print_help();
 	    return 0;
-	    break;
 	case 'i':
-	    infile = open(optarg, O_RDONLY);
+	    infile = open(optarg, O_RDONLY);  // open file to read
 	    if (infile < 0) {
 		fprintf(stderr, "Error: cannot open infile\n");
 	    }
 	    break;
 	case 'o':
-	    outfile = open(optarg, O_WRONLY | O_CREAT);
+	    outfile = open(optarg, O_WRONLY | O_CREAT);  // open/create file to write to
 	    if (outfile < 0) {
 		fprintf(stderr, "Error cannot open outfile\n");
 	    }
@@ -73,8 +81,8 @@ int main(int argc, char **argv) {
 	    verbose = true;
 	    break;
 	default:
-	    // print help
-	    break;
+	    print_help();
+	    return 0;
 	}
     }
 
@@ -82,51 +90,27 @@ int main(int argc, char **argv) {
 
     int b = 0;  // num of bytes read
     uint8_t buffer[BLOCK] = {0};
-#ifdef __DEBUG__
-    fprintf(stderr, "loading...");
-#endif
+
     //create histogram
     while ((b = read_bytes(infile, buffer, BLOCK)) > 0) {
 	for (uint64_t i = 0; i < BLOCK; i += 1) {
 	    histogram[buffer[i]] += 1;
 	}
     }
-#ifdef __DEBUG__
-    fprintf(stderr,"done\n");
-#endif
 
     histogram[0] ++;
     histogram[ALPHABET - 1] ++;
 
-
-#ifdef __DEBUG__
-    fprintf(stderr, "building tree...");
-#endif
     Node *root;
     root = build_tree(histogram);  // construct huffman tree
 
-#ifdef __DEBUG__
-    fprintf(stderr, "done\n");
-#endif
-
     // construct table of codes
-#ifdef __DEBUG__
-    fprintf(stderr, "creating code tables...");
-#endif
     Code code_table[ALPHABET];
     for(int i = 0; i < ALPHABET; i++){
 	code_table[i] = code_init();
     }
     build_codes(root, code_table);
 
-#ifdef __DEBUG__
-    fprintf(stderr, "done.\n");
-#endif
-
-
-#ifdef __DEBUG__
-    fprintf(stderr, "writing header...");
-#endif
     // construct header
     Header h;
     h.magic = MAGIC;
@@ -146,55 +130,31 @@ int main(int argc, char **argv) {
 
     write_bytes(outfile, (uint8_t *) &h, sizeof(h));  // write header to outfile
 
-#ifdef __DEBUG__
-    fprintf(stderr, "size of header = %lu size of file: %lu..", sizeof(h), h.file_size);
-    fprintf(stderr, "done\n");
-#endif
-
-
-#ifdef __DEBUG__
-    fprintf(stderr, "writing tree...");
-#endif
     tree_dump(root, outfile);  // print tree out to outfile
 
-#ifdef __DEBUG__
-    fprintf(stderr, "done\n");
-#endif
-
-#ifdef __DEBUG__
-    fprintf(stderr, "writing compressed file...");
-#endif
     b = 0;
-    lseek(infile, 0, SEEK_SET);
+    lseek(infile, 0, SEEK_SET);  // offset file to beginning
     uint8_t c_buf[BLOCK];
-#ifdef __DEBUG__
-    //fprintf(stderr, "bytes read: %u", (b = read_bytes(infile, c_buf, BLOCK)));
-#endif
+
+    // read from beginning of infile and write out code for each byte
     while ((b = read_bytes(infile, c_buf, BLOCK)) > 0) {
-#ifdef __DEBUG__
-	fprintf(stderr, "bytes: %u ", b);
-	fprintf(stderr, "reading from infile ");
-#endif
 	for (int symbol = 0; symbol < b; symbol += 1) {
 	    write_code(outfile, &code_table[c_buf[symbol]]);
-#ifdef __DEBUG__
 	    fprintf(stderr, ".");
 	    fprintf(stderr, "%d: %d", symbol, c_buf[symbol]);
 	    code_print(&code_table[c_buf[symbol]]);
-#endif
 	}
     }
-    flush_codes(outfile);
-#ifdef __DEBUG__
-    fprintf(stderr, "done.\n");
-    fprintf(stderr, "finalizing...");
-#endif
+    flush_codes(outfile);  // write out remaining bytes
+
+    if (verbose) {  // print stats
+	fprintf(stderr, "Uncompressed file size:  bytes\nCompressed file size:  bytes\nSpace saving:  %%\n");
+    }
+
+    // close files
     close(infile);
     close(outfile);
 
-#ifdef __DEBUG__
-    fprintf(stderr, "done\n");
-#endif
     // free memory
     delete_tree(&root);
 

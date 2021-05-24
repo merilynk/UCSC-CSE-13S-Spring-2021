@@ -13,15 +13,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Constructs a huffman tree given a histogram of symbols.
 Node *build_tree(uint64_t hist[static ALPHABET]) {
     PriorityQueue *pq = pq_create(ALPHABET);
     Node *parent;
+
+    // creating priority queue of nodes
     for (uint64_t symbol = 0; symbol < ALPHABET; symbol++) {
         if (hist[symbol] > 0) {
             Node *n = node_create(symbol, hist[symbol]);
             enqueue(pq, n);
         }
     }
+
+    // constructing tree with priority queue
     while (pq_size(pq) >= 2) {
         Node *left_child;
         Node *right_child;
@@ -36,9 +41,10 @@ Node *build_tree(uint64_t hist[static ALPHABET]) {
     return root;
 }
 
+// Recursive post order traversal of tree to create code table.
 void post_order_traversal(Node *n, Code table[static ALPHABET], Code c) {
     if (!(n->left && n->right)) {
-        table[n->symbol] = c;
+        table[n->symbol] = c;  // node is a leaf
     } else {
         code_push_bit(&c, 0);
         post_order_traversal(n->left, table, c);
@@ -51,21 +57,24 @@ void post_order_traversal(Node *n, Code table[static ALPHABET], Code c) {
     return;
 }
 
+// Constructs the code table.
 void build_codes(Node *root, Code table[static ALPHABET]) {
     Code c = code_init();
     post_order_traversal(root, table, c);
     return;
 }
 
+// Reconstructs the Huffman tree given a tree dump.
 Node *rebuild_tree(uint16_t nbytes, uint8_t tree_dump[static nbytes]) {
     Stack *nodes_stack = stack_create(nbytes);
     Node *parent;
+
     for (uint8_t i = 0; i < nbytes; i++) {
-        if (tree_dump[i] == 'L') {
+        if (tree_dump[i] == 'L') {  // leaf node
             Node *leaf = node_create(tree_dump[i + 1], 0);
             stack_push(nodes_stack, leaf);
             i++;
-        } else if (tree_dump[i] == 'I') {
+        } else if (tree_dump[i] == 'I') {  // interior node
             Node *left;
             Node *right;
             stack_pop(nodes_stack, &right);
@@ -80,6 +89,7 @@ Node *rebuild_tree(uint16_t nbytes, uint8_t tree_dump[static nbytes]) {
     return root;
 }
 
+// Frees all allocated memory for the tree nodes.
 void delete_tree(Node **root) {
     if (*root == NULL) {
         return;
@@ -92,5 +102,4 @@ void delete_tree(Node **root) {
         }
         node_delete(root);
     }
-    //return;
 }

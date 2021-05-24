@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Node constructor
 Node *node_create(uint8_t symbol, uint64_t frequency) {
     Node *n = (Node *) calloc(1, sizeof(Node));
     if (n) {
@@ -17,6 +18,7 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
     return n;
 }
 
+// Node deconstructor
 void node_delete(Node **n) {
     if (*n) {
         free(*n);
@@ -25,6 +27,7 @@ void node_delete(Node **n) {
     return;
 }
 
+// Joins two nodes into a parent node
 Node *node_join(Node *left, Node *right) {
     Node *parent = node_create('$', left->frequency + right->frequency);
     parent->left = left;
@@ -32,6 +35,7 @@ Node *node_join(Node *left, Node *right) {
     return parent;
 }
 
+// Prints a node
 void node_print(Node *n) {
     printf("Symbol: %u", n->symbol);
     printf(" Frequency: %lu\n", n->frequency);
