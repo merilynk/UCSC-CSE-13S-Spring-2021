@@ -40,8 +40,12 @@ HashTable *ht_create(uint32_t size, bool mtf) {
 void ht_delete(HashTable **ht) {
     if (*ht && (*ht)->lists) {
 	for (uint32_t l = 0; l < (*ht)->size; l++) {
-	    ll_delete((*ht)->lists + l);
+	    if ((*ht)->lists[l]) {
+		ll_delete(&((*ht)->lists[l]));
+	    }
 	}
+	free((*ht)->lists);
+	free(*ht);
 	*ht = NULL;
     }
 }
@@ -90,7 +94,4 @@ void ht_print(HashTable *ht) {
     }
     return;
 }
-
-
-
 

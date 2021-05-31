@@ -33,10 +33,11 @@ LinkedList *ll_create(bool mtf) {
 
 void ll_delete(LinkedList **ll) {
     if (*ll) {
-	for (Node *node = (*ll)->head; node != (*ll)->tail; node = node->next) {
-	    node_delete(&node);
+	for (Node *node = (*ll)->head->next; node != NULL; node = node->next) {
+	    node_delete(&(node->prev));
 	}
 	node_delete(&((*ll)->tail));
+	free(*ll);
 	*ll = NULL;
     }
     return;
