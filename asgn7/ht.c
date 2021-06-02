@@ -19,6 +19,13 @@ struct HashTable {
     LinkedList **lists;
 };
 
+void ht_test(HashTable *ht) {
+    for (uint32_t i = 0; i < ht_size(ht); i ++) {
+	if (ht->lists[i] != NULL) {
+	    fprintf(stderr, "Pointer not null %u\n", (uint32_t) ht->lists[i]);
+	}
+    }
+}
 // Code from assignment pdf
 HashTable *ht_create(uint32_t size, bool mtf) {
     HashTable *ht = (HashTable *) malloc(sizeof(HashTable));
@@ -66,8 +73,13 @@ Node *ht_lookup(HashTable *ht, char *oldspeak) {
 
 void ht_insert(HashTable *ht, char *oldspeak, char *newspeak) {
     uint32_t index = hash(ht->salt, oldspeak) % ht->size;
+    fprintf(stderr, "%u", index);
     if (!(ht->lists[index])) {
 	ht->lists[index] = ll_create(ht->mtf);
+	fprintf(stderr, "%u", (uint32_t) ht->lists[index]);
+    }
+    else {
+	fprintf(stderr, "?%u", (uint32_t)ht->lists[index]);
     }
     ll_insert(ht->lists[index], oldspeak, newspeak);
 }

@@ -4,10 +4,12 @@
 
 #include "node.h"
 #include "ll.h"
+#include "bv.h"
 #include "bf.h"
 #include "ht.h"
 #include "speck.h"
 #include "parser.h"
+#include "messages.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,116 +17,155 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <assert.h>
+#include <regex.h>
 
-#define WORD "[a-zA-Z0-9'\-]+"
+#define WORD "[a-zA-Z0-9'\\-_]+"
+#define OPTIONS "ht:f:ms"
+#define BUFFER 1024
 
+#define __DEBUG__
 
-int main (void) {
-    LinkedList *ll = ll_create(true);
-    printf("I created list...");
-    assert(ll != NULL);
-    printf("yes\n");
-    ll_insert(ll, "hi", "greetings");
-    printf("Length is one...");
-    assert(ll_length(ll) == 1);
-    printf("yes\n");
+int main (int argc, char **argv) {
 
-    ll_insert(ll, "cya", "good morrow");
-    ll_insert(ll, "fun", "enjoyable");
-    printf("length is now 3...");
-    assert(ll_length(ll) == 3);
-    printf("yes.\n");
+    int opt = 0;
+    bool stats = false;  // true if printing compression statistics
+    uint32_t size_ht = 10000;  // default size of ht
+    uint32_t size_bf = 1048576;  // default size of bf
+    bool mtf_rule = false;  // true if mtf enabled
 
+    // parse command line options
+    while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
+	switch (opt) {
+	    case 'h':
+		// print help
+		return 0;
+	    case 't':
+		sscanf(optarg, "%u", &size_ht);
+		break;
+	    case 'f':
+		sscanf(optarg, "%u", &size_bf);
+		break;
+	    case 'm':
+		mtf_rule = true;
+		break;
+	    case 's':
+		stats = true;
+		break;
+	    default:
+		// print help
+		return 0;
+	}
+    }
+#ifdef __DEBUG__
+    fprintf(stderr, "Initializing bf and ht...");
+#endif
+    BloomFilter *bloom_filter = bf_create(size_bf);
+    HashTable *hash_table = ht_create(size_ht, mtf_rule);
+#ifdef __DEBUG__
+    ht_test(hash_table);
+    fprintf(stderr, "done.\n");
+    fprintf(stderr, "Reading in badspeak words...");
+#endif
+    FILE *badspeak_file = fopen("badspeak.txt", "r");
+    char badspeak[BUFFER];
+    int scanned = 0;
+    while ((scanned = fscanf(badspeak_file, "%s", badspeak)) != EOF) {
+#ifdef __DEBUG__
+    fprintf(stderr, ".%s\n", badspeak);
+#endif
+	//bf_insert(bloom_filter, badspeak);
 
-    printf("List contains hi...");
-    assert(ll_lookup(ll, "hi") != NULL);
-    printf("yes\n");
-    printf("List doesnt contain greetings...");
-    assert(ll_lookup(ll, "greetings") == NULL);
-    printf("yes\n");
-    ll_print(ll);
+#ifdef __DEBUG__
+    fprintf(stderr, ".");
+#endif
+	ht_insert(hash_table, badspeak, NULL);
 
-    printf("deleting ll...");
-    ll_delete(&ll);
-    assert(ll == NULL);
-    printf("done\n");
+#ifdef __DEBUG__
+    fprintf(stderr, ".");
+#endif
+    }
 
+#ifdef __DEBUG__
+    fprintf(stderr, "done.\n");
+    fprintf(stderr, "Reading in newspeak words...");
+#endif
 
-    HashTable *ht = ht_create(20, true);
-    printf("I created a hash table...");
-    assert(ht != NULL);
-    printf("yes\n");
+    FILE *newspeak_file = fopen("newspeak.txt", "r");
+    char oldspeak[BUFFER];
+    char newspeak[BUFFER];
+    scanned = 0;
+    while ((scanned = fscanf(newspeak_file, "%s %s", oldspeak, newspeak)) != EOF) {
+	bf_insert(bloom_filter, oldspeak);
+	ht_insert(hash_table, oldspeak, newspeak);
+    }
 
-    printf("the hash table is size 20...");
-    assert(ht_size(ht) == 20);
-    printf("yes\n");
+#ifdef __DEBUG__
+    fprintf(stderr, "done.\n");
+    fprintf(stderr, "Reading in from stdin...");
+#endif
+    // based off example program using parsing module in assignment pdf
+    regex_t reg_ex;
+    if (regcomp(&reg_ex, WORD, REG_EXTENDED)) {
+	fprintf(stderr, "Failed to compile regex.\n");
+	return 1;
+    }
 
-    ht_insert(ht, "sad", "happy");
-    ht_insert(ht, "write", "papertalk");
-    ht_insert(ht, "read", "papertalk");
+    bool thoughtcrime = false;  // true if thoughtcrime committed
+    bool rightspeak_counseling = false;  // true if requires rightspeak counseling
 
-    printf("I inserted 3 linked lists...");
-    assert(ht_count(ht) == 3);
-    printf("yes\n");
+    LinkedList *badspeak_list = ll_create(mtf_rule);  // list of badspeak words citizen used
 
-    printf("hi not in ht...");
-    assert(ht_lookup(ht, "hi") == NULL);
-    printf("yes\n");
+    LinkedList *oldspeak_list = ll_create(mtf_rule);  // list of oldspeak words used w/ newspeak translation
 
-    printf("sad is in ht...");
-    assert(ht_lookup(ht, "sad") != NULL);
-    printf("yes\n");
+    // based off example program using parsing module in assignment pdf
+    char *word = NULL;
+    while ((word = next_word(stdin, &reg_ex)) != NULL) {  // read in words
 
-    ht_print(ht);
+	if (bf_probe(bloom_filter, word)) {  // check if word is badspeak or oldspeak
 
-    printf("deleting ht...");
-    ht_delete(&ht);
-    assert(ht == NULL);
-    printf("yes\n");
+	    if (ht_lookup(hash_table, word) == NULL) {
+		thoughtcrime = true;  // citizen guilty of thoughtcrime
+		ll_insert(badspeak_list, word, NULL);
+	    }
+	    else if (ht_lookup(hash_table, word) != NULL) {
+		rightspeak_counseling = true;  // citizen requires counseling on rightspeak
+		ll_insert(oldspeak_list, word, ht_lookup(hash_table, word)->newspeak);
+	    }
+	    else {
+		// false positive
+	    }
 
-    BloomFilter *bf = bf_create(40);
-    printf("I created a bloom filter...");
-    assert(bf != NULL);
-    printf("yes\n");
+	}
 
-    printf("Size is 40...");
-    assert(bf_size(bf) == 40);
-    printf("yes\n");
+    }
 
-    printf("count: %d\n", bf_count(bf));
+#ifdef __DEBUG__
+    fprintf(stderr, "done.\n");
+    fprintf(stderr, "Printing messages...");
+#endif
+    // print verdict messages
+    if (thoughtcrime && rightspeak_counseling) {
+	fprintf(stdout, "%s", mixspeak_message);
+	ll_print(badspeak_list);
+	ll_print(oldspeak_list);
+    }
+    else if (thoughtcrime) {
+	fprintf(stdout, "%s", badspeak_message);
+	ll_print(badspeak_list);
+    }
+    else if (rightspeak_counseling) {
+	fprintf(stdout, "%s", goodspeak_message);
+	ll_print(oldspeak_list);
+    }
 
-    printf("insert 1\n");
-    bf_insert(bf, "sad");
-    printf("count: %d\n", bf_count(bf));
-
-    printf("insert 2nd\n");
-    bf_insert(bf, "write");
-    printf("count: %d\n", bf_count(bf));
-
-    printf("insert 3rd\n");
-    bf_insert(bf, "read");
-    printf("count: %d\n", bf_count(bf));
-
-    printf("insert 4th\n");
-    bf_insert(bf, "hi");
-    printf("count: %d\n", bf_count(bf));
-
-
-    printf("Sad is in bf...");
-    assert(bf_probe(bf, "sad") == true);
-    printf("yes\n");
-
-    printf("java is not in bf...");
-    assert(bf_probe(bf, "java") == false);
-    printf("yes\n");
-
-    printf("count: %d\n", bf_count(bf));
-
-    bf_print(bf);
-
-    printf("deleting bf...");
-    bf_delete(&bf);
-    assert(bf == NULL);
-    printf("yes\n");
-
+#ifdef __DEBUG__
+    fprintf(stderr, "done.\n");
+    fprintf(stderr, "Finializing...");
+#endif
+    clear_words();
+    regfree(&reg_ex);
+    ll_delete(&badspeak_list);
+    ll_delete(&oldspeak_list);
+    ht_delete(&hash_table);
+    bf_delete(&bloom_filter);
 }
