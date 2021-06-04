@@ -8,8 +8,6 @@
 
 typedef struct HashTable HashTable;
 
-void ht_test(HashTable *ht);
-
 HashTable *ht_create(uint32_t size, bool mtf);
 
 void ht_delete(HashTable **ht);

@@ -14,20 +14,18 @@ struct BitVector {
     uint8_t *vector; // array of bytes
 };
 
-// Code referenced from Sahiti's section.
-
 // Create and allocate memory for bit vector.
 BitVector *bv_create(uint32_t length) {
     BitVector *v = (BitVector *) calloc(1, sizeof(BitVector));
     if (v) {
         v->length = length;
-        uint8_t items = 0;
+        uint32_t items = 0;
 
         // Rounding length
-        if (length % 8 == 0) {
-            items = length / 8;
+        if (v->length % 8 == 0) {
+            items = v->length / 8;
         } else {
-            items = length / 8 + 1;
+            items = v->length / 8 + 1;
         }
 
         v->vector = (uint8_t *) calloc(items, sizeof(uint8_t));
