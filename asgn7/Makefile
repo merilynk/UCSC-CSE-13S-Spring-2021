@@ -2,7 +2,7 @@ CC = clang
 CFLAGS = -Wall -Wextra -Werror -Wpedantic -g
 LFLAGS = -lm
 
-all: banhammer adt_testing
+all: banhammer
 
 banhammer: banhammer.o node.o ll.o ht.o bf.o bv.o speck.o parser.o
 	$(CC) -o banhammer $^

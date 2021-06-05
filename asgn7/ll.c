@@ -55,8 +55,7 @@ uint32_t ll_length(LinkedList *ll) {
 
 Node *ll_lookup(LinkedList *ll, char *oldspeak) {
     seeks++;
-    for (Node *node = ll->head->next; node != ll->tail; node = node->next) {
-        links++;
+    for (Node *node = ll->head->next; node != ll->tail; node = node->next, links++) {
         if (strcmp(node->oldspeak, oldspeak) == 0) {
             if (ll->mtf) {
                 node->prev->next = node->next;

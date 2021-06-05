@@ -23,9 +23,9 @@ BloomFilter *bf_create(uint32_t size) {
     BloomFilter *bf = (BloomFilter *) malloc(sizeof(BloomFilter));
     if (bf) {
         bf->primary[0] = 0x5adf08ae86d36f21;
-        bf->primary[1] = 0xa267bbd3115f3957;
+        bf->primary[1] = 0xa267bbd3116f3957;
         bf->secondary[0] = 0x419d292ea2ffd49e;
-        bf->secondary[1] = 0x09601433057d5789;
+        bf->secondary[1] = 0x09601433057d5786;
         bf->tertiary[0] = 0x50d8bb08de3818df;
         bf->tertiary[1] = 0x4deaae187c16ae1d;
         bf->filter = bv_create(size);
@@ -64,8 +64,8 @@ bool bf_probe(BloomFilter *bf, char *oldspeak) {
     uint32_t index1 = hash(bf->primary, oldspeak) % bf_size(bf);
     uint32_t index2 = hash(bf->secondary, oldspeak) % bf_size(bf);
     uint32_t index3 = hash(bf->tertiary, oldspeak) % bf_size(bf);
-    return bv_get_bit(bf->filter, index1) == 1 && bv_get_bit(bf->filter, index2) == 1
-           && bv_get_bit(bf->filter, index3);
+    return (bv_get_bit(bf->filter, index1) == 1) && (bv_get_bit(bf->filter, index2) == 1)
+           && (bv_get_bit(bf->filter, index3) == 1);
 }
 
 uint32_t bf_count(BloomFilter *bf) {

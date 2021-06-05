@@ -56,6 +56,9 @@ uint32_t ht_size(HashTable *ht) {
 }
 
 Node *ht_lookup(HashTable *ht, char *oldspeak) {
+    if (oldspeak == NULL) {
+	return NULL;
+    }
     uint32_t index = hash(ht->salt, oldspeak) % ht->size;
     if (!(ht->lists[index])) {
         return NULL;
