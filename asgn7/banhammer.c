@@ -17,6 +17,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #define WORD    "([a-zA-Z0-9_]+(('|-)[a-z0-9A-Z_]+)*)"
@@ -50,16 +51,24 @@ int main(int argc, char **argv) {
     // parse command line options
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
-        case 'h':
-            print_help_message();
-            return 0;
-        case 't': sscanf(optarg, "%u", &size_ht); break;
-        case 'f': sscanf(optarg, "%u", &size_bf); break;
+        case 'h': print_help_message(); return 0;
+        case 't':
+            sscanf(optarg, "%u", &size_ht);
+            if (size_ht <= 0) {
+                fprintf(stderr, "Invalid hash table size.\n");
+                return 0;
+            }
+            break;
+        case 'f':
+            sscanf(optarg, "%u", &size_bf);
+            if (size_bf <= 0) {
+                fprintf(stderr, "Invalid bloom filter size.\n");
+                return 0;
+            }
+            break;
         case 'm': mtf_rule = true; break;
         case 's': stats = true; break;
-        default:
-	    print_help_message();
-            return 0;
+        default: print_help_message(); return 0;
         }
     }
 
@@ -69,8 +78,7 @@ int main(int argc, char **argv) {
     // read in badspeak words
     FILE *badspeak_file = fopen("badspeak.txt", "r");
     char badspeak[BUFFER];
-    int scanned = 0;
-    while ((scanned = fscanf(badspeak_file, "%s", badspeak)) != EOF) {
+    while (fscanf(badspeak_file, "%s", badspeak) != EOF) {
         bf_insert(bloom_filter, badspeak);
         ht_insert(hash_table, badspeak, NULL);
     }
@@ -79,8 +87,7 @@ int main(int argc, char **argv) {
     FILE *newspeak_file = fopen("newspeak.txt", "r");
     char oldspeak[BUFFER];
     char newspeak[BUFFER];
-    scanned = 0;
-    while ((scanned = fscanf(newspeak_file, "%s %s", oldspeak, newspeak)) != EOF) {
+    while (fscanf(newspeak_file, "%s %s", oldspeak, newspeak) != EOF) {
         bf_insert(bloom_filter, oldspeak);
         ht_insert(hash_table, oldspeak, newspeak);
     }
@@ -103,35 +110,32 @@ int main(int argc, char **argv) {
     char *word = NULL;
     while ((word = next_word(stdin, &reg_ex)) != NULL) { // read in words
 
-        if (bf_probe(bloom_filter, word)) {  // check is possible badspeak or oldspeak
-            Node *looked_up = ht_lookup(hash_table, word);  // confirm word is badspeak or oldspeak
+        if (bf_probe(bloom_filter, word)) { // check is possible badspeak or oldspeak
+            Node *looked_up = ht_lookup(hash_table, word); // confirm word is badspeak or oldspeak
 
-	    if (looked_up != NULL) {
+            if (looked_up != NULL) {
 
-		if (looked_up->newspeak == NULL) {
-                    thoughtcrime = true;  // citizen commited thoughtcrime
+                if (looked_up->newspeak == NULL) {
+                    thoughtcrime = true; // citizen commited thoughtcrime
                     ll_insert(badspeak_list, word, NULL);
                 } else {
                     rightspeak_counseling = true; // citizen requires counseling on rightspeak
                     ll_insert(oldspeak_list, word, looked_up->newspeak);
                 }
-
             }
-
         }
     }
 
-    if (stats) {  // print statistics if command line option specified
+    if (stats) { // print statistics if command line option specified
 
-	printf("Seeks: %lu\n", seeks);
+        printf("Seeks: %lu\n", seeks);
         printf("Average seek length: %lf\n", (double) links / (double) seeks);
         printf("Hash table load: %lf%%\n",
             100.0 * ((double) ht_count(hash_table) / (double) ht_size(hash_table)));
         printf("Bloom filter load: %lf%%\n",
             100.0 * ((double) bf_count(bloom_filter) / (double) bf_size(bloom_filter)));
 
-    }
-    else {  // print verdict messages
+    } else { // print verdict messages
 
         if (thoughtcrime && rightspeak_counseling) {
             fprintf(stdout, "%s", mixspeak_message);
@@ -144,7 +148,6 @@ int main(int argc, char **argv) {
             fprintf(stdout, "%s", goodspeak_message);
             ll_print(oldspeak_list);
         }
-
     }
 
     // close files and free memory

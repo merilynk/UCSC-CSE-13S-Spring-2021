@@ -14,10 +14,10 @@
 
 // Code from assignment pdf
 struct BloomFilter {
-    uint64_t primary[2];  // salt
+    uint64_t primary[2]; // salt
     uint64_t secondary[2];
     uint64_t tertiary[2];
-    BitVector *filter;  // bit vector representing bloom filter
+    BitVector *filter; // bit vector representing bloom filter
 };
 
 // Code from assignment pdf.

@@ -14,10 +14,10 @@
 
 // Struct definition from assignment pdf
 struct LinkedList {
-    uint32_t length;  // num nodes in list
-    Node *head;  // head sentinel node
-    Node *tail;  // tail sentinel node
-    bool mtf;  // move-to-front
+    uint32_t length; // num nodes in list
+    Node *head; // head sentinel node
+    Node *tail; // tail sentinel node
+    bool mtf; // move-to-front
 };
 
 uint64_t seeks = 0;
@@ -61,7 +61,7 @@ Node *ll_lookup(LinkedList *ll, char *oldspeak) {
     seeks++;
     for (Node *node = ll->head->next; node != ll->tail; node = node->next, links++) {
         if (strcmp(node->oldspeak, oldspeak) == 0) {
-	    // a node was found
+            // a node was found
             if (ll->mtf) {
                 node->prev->next = node->next;
                 node->next->prev = node->prev;
@@ -73,7 +73,7 @@ Node *ll_lookup(LinkedList *ll, char *oldspeak) {
             return node;
         }
     }
-    return NULL;  // node was not found
+    return NULL; // node was not found
 }
 
 // Inserts a node containing the oldspeak and newspeak into the linked list.

@@ -16,5 +16,7 @@ make all
 ./banhammer [-h] [-t hash table size] [-f bloom filter size] [-m] [-s]
 ```
 Use -h to get the help/usage message.
-
-## Scan-Build Errors
+-t: specify hash table size
+-f: specify bloom filter size
+-m: enable move to print rule
+-s: enable printing of statistics

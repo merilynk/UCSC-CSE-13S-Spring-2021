@@ -15,10 +15,10 @@
 
 // Code from assignment pdf
 struct HashTable {
-    uint64_t salt[2];  // for the hash function
-    uint32_t size;  // size of hash table
-    bool mtf;  // move to front rule
-    LinkedList **lists;  // array of linked lists
+    uint64_t salt[2]; // for the hash function
+    uint32_t size; // size of hash table
+    bool mtf; // move to front rule
+    LinkedList **lists; // array of linked lists
 };
 
 // Code from assignment pdf
@@ -44,7 +44,7 @@ void ht_delete(HashTable **ht) {
     if (*ht && (*ht)->lists) {
         for (uint32_t l = 0; l < (*ht)->size; l++) {
             // loop through hash table to delete ll if it exists
-	    if ((*ht)->lists[l]) {
+            if ((*ht)->lists[l]) {
                 ll_delete(&((*ht)->lists[l]));
             }
         }
@@ -62,7 +62,7 @@ uint32_t ht_size(HashTable *ht) {
 // Looks for a node containing the oldspek in the hash table.
 Node *ht_lookup(HashTable *ht, char *oldspeak) {
     if (oldspeak == NULL) {
-        return NULL;  // make sure oldspeak isn't null
+        return NULL; // make sure oldspeak isn't null
     }
     uint32_t index = hash(ht->salt, oldspeak) % ht->size;
     // look for linked list at index

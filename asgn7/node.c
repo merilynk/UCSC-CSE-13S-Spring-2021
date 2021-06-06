@@ -28,7 +28,7 @@ char *str_dup(char *og_str) {
 Node *node_create(char *oldspeak, char *newspeak) {
     Node *n = (Node *) calloc(1, sizeof(Node));
     if (n) {
-        n->oldspeak = oldspeak ? str_dup(oldspeak) : NULL;  // check for null passed in
+        n->oldspeak = oldspeak ? str_dup(oldspeak) : NULL; // check for null passed in
         n->newspeak = newspeak ? str_dup(newspeak) : NULL;
     }
     return n;
