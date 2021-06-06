@@ -12,13 +12,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Code from assignment pdf
 struct BloomFilter {
-    uint64_t primary[2];
+    uint64_t primary[2];  // salt
     uint64_t secondary[2];
     uint64_t tertiary[2];
-    BitVector *filter;
+    BitVector *filter;  // bit vector representing bloom filter
 };
 
+// Code from assignment pdf.
+// Construts a bloom filter given a size parameter.
 BloomFilter *bf_create(uint32_t size) {
     BloomFilter *bf = (BloomFilter *) malloc(sizeof(BloomFilter));
     if (bf) {
@@ -37,6 +40,7 @@ BloomFilter *bf_create(uint32_t size) {
     return bf;
 }
 
+// Destructs the bloom filter passed in.
 void bf_delete(BloomFilter **bf) {
     if (*bf && (*bf)->filter) {
         bv_delete(&((*bf)->filter));
@@ -46,20 +50,24 @@ void bf_delete(BloomFilter **bf) {
     return;
 }
 
+// Returns the length of the bloom filter.
 uint32_t bf_size(BloomFilter *bf) {
     return bv_length(bf->filter);
 }
 
+// Inserts a word into the bloom filter.
 void bf_insert(BloomFilter *bf, char *oldspeak) {
+    // compute indices from hash
     uint32_t index1 = hash(bf->primary, oldspeak) % bf_size(bf);
     uint32_t index2 = hash(bf->secondary, oldspeak) % bf_size(bf);
     uint32_t index3 = hash(bf->tertiary, oldspeak) % bf_size(bf);
-    //fprintf(stderr, "%u %u %u", index1, index2, index3);
+    // set bit at indices
     bv_set_bit(bf->filter, index1);
     bv_set_bit(bf->filter, index2);
     bv_set_bit(bf->filter, index3);
 }
 
+// Checks if a word is in the bloom filter.
 bool bf_probe(BloomFilter *bf, char *oldspeak) {
     uint32_t index1 = hash(bf->primary, oldspeak) % bf_size(bf);
     uint32_t index2 = hash(bf->secondary, oldspeak) % bf_size(bf);
@@ -68,6 +76,7 @@ bool bf_probe(BloomFilter *bf, char *oldspeak) {
            && (bv_get_bit(bf->filter, index3) == 1);
 }
 
+// Returns the number of set bits in the bloom filter.
 uint32_t bf_count(BloomFilter *bf) {
     uint32_t count = 0;
     for (uint32_t i = 0; i < bf_size(bf); i++) {
@@ -78,6 +87,7 @@ uint32_t bf_count(BloomFilter *bf) {
     return count;
 }
 
+// Prints the bloom filter.
 void bf_print(BloomFilter *bf) {
     bv_print(bf->filter);
 }

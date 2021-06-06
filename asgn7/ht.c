@@ -15,13 +15,14 @@
 
 // Code from assignment pdf
 struct HashTable {
-    uint64_t salt[2];
-    uint32_t size;
-    bool mtf;
-    LinkedList **lists;
+    uint64_t salt[2];  // for the hash function
+    uint32_t size;  // size of hash table
+    bool mtf;  // move to front rule
+    LinkedList **lists;  // array of linked lists
 };
 
 // Code from assignment pdf
+// Constructs a hash table.
 HashTable *ht_create(uint32_t size, bool mtf) {
     HashTable *ht = (HashTable *) malloc(sizeof(HashTable));
     if (ht) {
@@ -38,10 +39,12 @@ HashTable *ht_create(uint32_t size, bool mtf) {
     return ht;
 }
 
+// Deconstructs the hash table passed in.
 void ht_delete(HashTable **ht) {
     if (*ht && (*ht)->lists) {
         for (uint32_t l = 0; l < (*ht)->size; l++) {
-            if ((*ht)->lists[l]) {
+            // loop through hash table to delete ll if it exists
+	    if ((*ht)->lists[l]) {
                 ll_delete(&((*ht)->lists[l]));
             }
         }
@@ -51,15 +54,18 @@ void ht_delete(HashTable **ht) {
     }
 }
 
+// Returns the size of the hash table.
 uint32_t ht_size(HashTable *ht) {
     return ht->size;
 }
 
+// Looks for a node containing the oldspek in the hash table.
 Node *ht_lookup(HashTable *ht, char *oldspeak) {
     if (oldspeak == NULL) {
-        return NULL;
+        return NULL;  // make sure oldspeak isn't null
     }
     uint32_t index = hash(ht->salt, oldspeak) % ht->size;
+    // look for linked list at index
     if (!(ht->lists[index])) {
         return NULL;
     } else {
@@ -67,22 +73,17 @@ Node *ht_lookup(HashTable *ht, char *oldspeak) {
     }
 }
 
+// Adds a node containing the oldspeak and newspeak into the hash table at the right index.
 void ht_insert(HashTable *ht, char *oldspeak, char *newspeak) {
     uint32_t index = hash(ht->salt, oldspeak) % ht->size;
-    //fprintf(stderr, "Hashed index:%u ", index);
     if (ht->lists[index] == NULL) {
         ht->lists[index] = ll_create(ht->mtf);
-        //fprintf(stderr, "%u\n", (uint32_t) ht->lists[index]);
     }
-    //else if (ht->lists[index] != NULL) {
-    //fprintf(stderr, "?%u\n", (uint32_t)ht->lists[index]);
-    //}
-    //fprintf(stderr, "Length before insert: %u\n", ll_length(ht->lists[index]));
     ll_insert(ht->lists[index], oldspeak, newspeak);
-    //ll_print(ht->lists[index]);
     return;
 }
 
+// Returns the number of linked lists in the hash table.
 uint32_t ht_count(HashTable *ht) {
     int count = 0;
     for (uint32_t l = 0; l < ht->size; l++) {
@@ -93,6 +94,7 @@ uint32_t ht_count(HashTable *ht) {
     return count;
 }
 
+// Prints the hash table.
 void ht_print(HashTable *ht) {
     for (uint32_t l = 0; l < ht->size; l++) {
         printf("%d: ", l);
