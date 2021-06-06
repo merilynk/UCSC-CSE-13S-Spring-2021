@@ -57,9 +57,8 @@ int main(int argc, char **argv) {
     int scanned = 0;
     while ((scanned = fscanf(badspeak_file, "%s", badspeak)) != EOF) {
 
-	bf_insert(bloom_filter, badspeak);
+        bf_insert(bloom_filter, badspeak);
         ht_insert(hash_table, badspeak, NULL);
-
     }
 
     FILE *newspeak_file = fopen("newspeak.txt", "r");
@@ -92,24 +91,22 @@ int main(int argc, char **argv) {
         if (bf_probe(bloom_filter, word)) { // check if word is badspeak or oldspeak
             Node *looked_up = ht_lookup(hash_table, word);
             if (looked_up != NULL) {
-		fprintf(stderr, "%s\n", looked_up->oldspeak);
+                //fprintf(stderr, "%s\n", looked_up->oldspeak);
                 if (looked_up->newspeak == NULL) {
                     // thoughtcrime
                     thoughtcrime = true;
                     ll_insert(badspeak_list, word, NULL);
-		    //printf("\n");
-		    //ll_print(badspeak_list);
+                    //printf("\n");
+                    //ll_print(badspeak_list);
                 } else {
                     rightspeak_counseling = true; // citizen requires counseling on rightspeak
                     ll_insert(oldspeak_list, word, looked_up->newspeak);
-		    //printf("\n");
-		    //ll_print(oldspeak_list);
+                    //printf("\n");
+                    //ll_print(oldspeak_list);
                 }
             }
         }
     }
-
-
 
     if (stats) {
         printf("Seeks: %lu\n", seeks);
@@ -117,7 +114,7 @@ int main(int argc, char **argv) {
         printf("Hash table load: %lf%%\n",
             100.0 * ((double) ht_count(hash_table) / (double) ht_size(hash_table)));
         printf("Bloom filter load: %lf%%\n",
-	    100.0 * ((double) bf_count(bloom_filter) / (double) bf_size(bloom_filter)));
+            100.0 * ((double) bf_count(bloom_filter) / (double) bf_size(bloom_filter)));
     } else {
         // print verdict messages
         if (thoughtcrime && rightspeak_counseling) {
