@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #define WORD    "([a-zA-Z0-9_]+(('|-)[a-z0-9A-Z_]+)*)"
 #define OPTIONS "ht:f:ms"
@@ -110,7 +111,11 @@ int main(int argc, char **argv) {
     char *word = NULL;
     while ((word = next_word(stdin, &reg_ex)) != NULL) { // read in words
 
-        if (bf_probe(bloom_filter, word)) { // check is possible badspeak or oldspeak
+	for (int i = 0; word[i] != '\0'; i ++) {
+	    word[i] = tolower(word[i]);  // making the word all lowercase
+	}
+
+	if (bf_probe(bloom_filter, word)) { // check is possible badspeak or oldspeak
             Node *looked_up = ht_lookup(hash_table, word); // confirm word is badspeak or oldspeak
 
             if (looked_up != NULL) {
